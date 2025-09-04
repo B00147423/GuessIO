@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GuessIO - Draw, Guess, Win Live!</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo-container">
+        <div class="logo-icon">🎨</div>
+        <h1 class="logo">GuessIO</h1>
+      </div>
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span>LIVE</span>
+      </div>
+    </header>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="main-card">
+      <div class="hero-section">
+        <h2 class="tagline">Draw, Guess, Win — live on Twitch!</h2>
+        <p class="subtitle">Join the ultimate drawing game where streamers draw and viewers guess!</p>
+        <button id="twitchLoginBtn" class="login-btn">
+          <span class="twitch-icon">📺</span>
+          Login with Twitch
+        </button>
+      </div>
+
+      <!-- Game Preview + Leaderboard -->
+      <div class="row">
+        <div class="preview">
+          <div class="card-header">
+            <h3>🎮 Game Preview</h3>
+            <div class="viewers">👁️ 1,247 watching</div>
+          </div>
+          <div class="game-canvas">
+            <div class="canvas-area">
+              <div class="drawing-tools">
+                <div class="tool active">🖌️</div>
+                <div class="tool">✏️</div>
+                <div class="tool">🖍️</div>
+              </div>
+              <div class="canvas-placeholder">
+                <p>🎨 Drawing in progress...</p>
+                <div class="word-hint">_ _ _ _ _ _</div>
+              </div>
+            </div>
+            <div class="game-status">
+              <div class="current-artist">🎨 StreamerPro is drawing</div>
+              <div class="timer">⏱️ 0:45</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="leaderboard">
+          <div class="card-header">
+            <h3>🏆 Top Players</h3>
+            <div class="trophy">🏆</div>
+          </div>
+          <div class="player-list" id="leaderboardList">
+            <div class="player-item gold">
+              <span class="rank">🥇</span>
+              <span class="username">DrawMaster</span>
+              <span class="score">2,847</span>
+            </div>
+            <div class="player-item silver">
+              <span class="rank">🥈</span>
+              <span class="username">ArtWizard</span>
+              <span class="score">2,156</span>
+            </div>
+            <div class="player-item bronze">
+              <span class="rank">🥉</span>
+              <span class="username">SketchPro</span>
+              <span class="score">1,892</span>
+            </div>
+            <div class="player-item">
+              <span class="rank">4</span>
+              <span class="username">PixelArtist</span>
+              <span class="score">1,654</span>
+            </div>
+            <div class="player-item">
+              <span class="rank">5</span>
+              <span class="username">CreativeMind</span>
+              <span class="score">1,432</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load modular JS -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+/* Index Page Styles (Landing/Login Page) */
+.main-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.tagline {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #9146ff, #772ce8);
+    color: white;
+    border: none;
+    padding: 18px 36px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 15px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(145, 70, 255, 0.3);
+}
+
+.login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(145, 70, 255, 0.4);
+}
+
+.twitch-icon {
+    font-size: 20px;
+}
+
+/* Row Layout */
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+/* Preview Card */
+.preview, .leaderboard {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: inset 0 0 0 2px #e9ecef;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.viewers {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.trophy {
+    font-size: 1.5rem;
+}
+
+/* Game Canvas */
+.game-canvas {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 2px solid #e9ecef;
+}
+
+.canvas-area {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.drawing-tools {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tool {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 18px;
+}
+
+.tool.active {
+    border-color: #9146ff;
+    background: #f3e5f5;
+}
+
+.tool:hover {
+    border-color: #9146ff;
+}
+
+.canvas-placeholder {
+    background: #fffbe7;
+    border: 2px dashed #ffc107;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    color: #555;
+}
+
+.canvas-placeholder p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.word-hint {
+    font-family: monospace;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    letter-spacing: 8px;
+}
+
+.game-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Leaderboard */
+.player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.player-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.player-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.player-item.gold {
+    background: #fff8e1;
+    border-color: #ffd54f;
+}
+
+.player-item.silver {
+    background: #f5f5f5;
+    border-color: #bdbdbd;
+}
+
+.player-item.bronze {
+    background: #fff3e0;
+    border-color: #ffb74d;
+}
+
+.rank {
+    font-size: 1.2rem;
+    min-width: 30px;
+}
+
+.username {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.score {
+    font-weight: 700;
+    color: #9146ff;
+}
+
+/* Responsive Login */
+@media (max-width: 768px) {
+    .main-card {
+        padding: 20px;
+    }
+    
+    .tagline {
+        font-size: 2rem;
+    }
+    
+    .row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

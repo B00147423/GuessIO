@@ -1,0 +1,64 @@
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+}
+
+.logo {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ff9800;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffe5e5;
+    border: 2px solid #ff4d4d;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #ff1a1a;
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background: #ff1a1a;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Responsive Header */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .logo {
+        font-size: 2.5rem;
+    }
+}

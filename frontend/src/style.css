@@ -1,0 +1,19 @@
+/* Main CSS File - Imports all component styles */
+
+/* Base/Global Styles */
+@import url('./css/base.css');
+
+/* Header Styles */
+@import url('./css/header.css');
+
+/* Index Page Styles (Landing/Login Page) */
+@import url('./css/index.css');
+
+/* Main Menu Styles */
+@import url('./css/mainMenu.css');
+
+/* Game Page Styles */
+@import url('./css/game.css');
+
+/* Theme Selection Styles */
+@import url('./css/themeSelection.css');

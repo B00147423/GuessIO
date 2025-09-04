@@ -1,0 +1,80 @@
+/* Main Menu Styles */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+}
+
+.user-welcome {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.main-menu {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.main-menu h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.main-menu p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.room-input {
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.room-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Responsive Main Menu */
+@media (max-width: 768px) {
+    .main-menu {
+        padding: 20px;
+    }
+    
+    .main-menu h1 {
+        font-size: 2rem;
+    }
+}

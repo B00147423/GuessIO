@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GuessIO - Game Room</title>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo-container">
+        <div class="logo-icon">🎨</div>
+        <h1 class="logo">GuessIO</h1>
+      </div>
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span>LIVE</span>
+      </div>
+    </header>
+
+    <!-- Game Section -->
+    <div class="game-container">
+      <div class="game-header">
+        <div class="game-info">
+          <h3 id="roomName">Room: Loading...</h3>
+          <div class="game-status">
+            <span id="playerCount">0 players</span>
+            <span id="gameTimer">⏱️ 0:00</span>
+          </div>
+        </div>
+        <button id="backToMenuBtn" class="btn btn-danger">← Back to Menu</button>
+      </div>
+      
+      <div class="game-main">
+        <canvas id="draw" width="800" height="600"></canvas>
+        <div class="game-sidebar">
+          <div class="drawing-tools">
+            <h4>🎨 Tools</h4>
+            <input type="color" id="colorPicker" value="#000000" />
+            <div class="brush-sizes">
+              <button class="brush-size active" data-size="2">●</button>
+              <button class="brush-size" data-size="4">●●</button>
+              <button class="brush-size" data-size="8">●●●</button>
+            </div>
+          </div>
+          
+          <div class="game-controls">
+            <button id="clearBtn" class="btn btn-secondary">🗑️ Clear Canvas</button>
+            <button id="undoBtn" class="btn btn-secondary">↶ Undo</button>
+          </div>
+          
+          <div class="player-list">
+            <h4>👥 Players in Room</h4>
+            <ul id="players"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load modular JS -->
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>
