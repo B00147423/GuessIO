@@ -6,3 +6,4 @@ sqlalchemy==1.4.49
 databases
 alembic
 requests
+websockets
