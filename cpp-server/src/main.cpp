@@ -1,5 +1,7 @@
 ﻿#include "server.h"
 #include "TwitchBotManager.h"
+#include "GameProtocol.h"
+#include "roomManager.h"
 #include <boost/asio.hpp>
 #include <thread>
 #include <vector>
@@ -45,6 +47,11 @@ int main() {
 
         std::cout << "Setting bot manager...\n";
         server.setBotManager(&botManager);
+
+        // Create a GameProtocol and set it on the bot manager
+        std::cout << "Creating GameProtocol...\n";
+        auto gameProtocol = std::make_shared<GameProtocol>(&server);
+        botManager.setGameProtocol(gameProtocol);
 
         std::cout << "Starting server...\n";
         server.start();

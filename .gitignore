@@ -42,3 +42,11 @@ config.json
 .env.local
 .env.production
 .env.staging
+
+dist/
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CMakeLists.txt
+Makefile

@@ -51,6 +51,67 @@ themed_words = {
         'guitar', 'piano', 'drums', 'violin', 'trumpet', 'saxophone',
         'microphone', 'headphones', 'concert', 'band', 'singer', 'rapper',
         'rock', 'jazz', 'classical', 'pop', 'hip hop', 'country'
+    ],
+    'technology': [
+        'laptop', 'phone', 'tablet', 'watch', 'camera', 'speaker',
+        'keyboard', 'mouse', 'monitor', 'printer', 'scanner', 'router',
+        'headphones', 'microphone', 'webcam', 'charger', 'battery', 'cable',
+        'wifi', 'bluetooth', 'usb', 'hdmi', 'ethernet', 'cloud', 'app'
+    ],
+    'brands': [
+        'nike', 'adidas', 'apple', 'google', 'microsoft', 'amazon',
+        'facebook', 'instagram', 'twitter', 'youtube', 'netflix', 'spotify',
+        'tesla', 'bmw', 'mercedes', 'toyota', 'honda', 'ford', 'samsung'
+    ],
+    'objects': [
+        'chair', 'table', 'lamp', 'clock', 'mirror', 'picture', 'frame',
+        'book', 'pen', 'pencil', 'paper', 'notebook', 'folder', 'stapler',
+        'scissors', 'tape', 'glue', 'ruler', 'calculator', 'calendar'
+    ],
+    'nature': [
+        'tree', 'flower', 'grass', 'leaf', 'mountain', 'river', 'ocean',
+        'sun', 'moon', 'star', 'cloud', 'rain', 'snow', 'fire', 'water',
+        'rock', 'sand', 'forest', 'beach', 'desert', 'valley', 'hill'
+    ],
+    'body': [
+        'head', 'eye', 'nose', 'mouth', 'ear', 'hand', 'finger', 'arm',
+        'leg', 'foot', 'toe', 'hair', 'face', 'smile', 'teeth', 'tongue',
+        'chest', 'back', 'shoulder', 'elbow', 'knee', 'ankle'
+    ],
+    'clothes': [
+        'shirt', 'pants', 'dress', 'shoes', 'hat', 'jacket', 'coat',
+        'socks', 'underwear', 'gloves', 'scarf', 'belt', 'tie', 'suit',
+        'skirt', 'shorts', 'boots', 'sandals', 'sweater', 'hoodie'
+    ],
+    'transportation': [
+        'car', 'bus', 'train', 'plane', 'boat', 'ship', 'bicycle', 'motorcycle',
+        'truck', 'taxi', 'helicopter', 'rocket', 'submarine', 'scooter',
+        'skateboard', 'rollerblades', 'wagon', 'sled', 'kayak', 'canoe'
+    ],
+    'buildings': [
+        'house', 'building', 'school', 'hospital', 'church', 'store', 'restaurant',
+        'hotel', 'bank', 'library', 'museum', 'theater', 'stadium', 'bridge',
+        'tower', 'castle', 'barn', 'garage', 'apartment', 'office'
+    ],
+    'colors': [
+        'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'brown',
+        'black', 'white', 'gray', 'silver', 'gold', 'rainbow', 'turquoise',
+        'maroon', 'navy', 'lime', 'magenta', 'cyan'
+    ],
+    'shapes': [
+        'circle', 'square', 'triangle', 'rectangle', 'oval', 'diamond', 'heart',
+        'star', 'cross', 'arrow', 'line', 'curve', 'spiral', 'zigzag',
+        'pentagon', 'hexagon', 'octagon', 'cube', 'sphere', 'pyramid'
+    ],
+    'actions': [
+        'run', 'walk', 'jump', 'swim', 'fly', 'dance', 'sing', 'play',
+        'eat', 'drink', 'sleep', 'read', 'write', 'draw', 'paint', 'cook',
+        'clean', 'wash', 'brush', 'cut', 'build', 'fix'
+    ],
+    'emotions': [
+        'happy', 'sad', 'angry', 'excited', 'scared', 'surprised', 'confused',
+        'tired', 'sleepy', 'hungry', 'thirsty', 'hot', 'cold', 'sick',
+        'worried', 'proud', 'shy', 'brave', 'calm', 'nervous'
     ]
 }
 

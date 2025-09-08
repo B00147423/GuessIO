@@ -48,6 +48,7 @@ void Session::doRead() {
 
 void Session::handleMessage(const std::string& msg) {
     std::cout << "Handling message: " << msg << "\n";
+
     m_server.onClientMessage(shared_from_this(), msg);
 }
 

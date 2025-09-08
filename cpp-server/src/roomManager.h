@@ -1,4 +1,4 @@
-#pragma once
+    #pragma once
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
@@ -17,12 +17,15 @@ public:
     void joinRoom(const std::string& roomId, std::shared_ptr<Session> s, const std::string& username);
     void leaveAll(std::shared_ptr<Session> s);
     void onMessage(std::shared_ptr<Session> s, const std::string& jsonMsg);
+    Room* getCurrentRoom(const std::string& channel);
 
 private:
     void handleJoin(std::shared_ptr<Session> s, const nlohmann::json& j, const std::string& roomId);
     void handleLeave(std::shared_ptr<Session> s, const nlohmann::json& j, const std::string& roomId);
 
     void handleChat(std::shared_ptr<Session> s, const nlohmann::json& j, const std::string& roomId);
+    void handleStartRound(std::shared_ptr<Session> s, const nlohmann::json& j, const std::string& roomId);
+    void handleGuess(std::shared_ptr<Session> s, const nlohmann::json& j, const std::string& roomId);
     void handleEndRound(const std::string& roomId);
     void handleStopBot(const nlohmann::json& j);
     void handleSpawnBot(const nlohmann::json& j);

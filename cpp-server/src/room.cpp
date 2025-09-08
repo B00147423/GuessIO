@@ -3,6 +3,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <chrono>
+#include <thread>
 using json = nlohmann::json;
 
 Room::Room() : nextPlayerId(1), m_lastActivity(std::chrono::steady_clock::now()) {}
@@ -28,6 +29,7 @@ void Room::join(std::shared_ptr<Session> s, const std::string& username) {
             Player p{ nextPlayerId++, username, 0 };
             players[username] = p;
             isNewPlayer = true;
+            std::cout << "[DEBUG] Room::join - Adding new player: " << username << " with ID: " << p.id << std::endl;
 
             joinMsg = {
                 {"type", "join"},
@@ -36,6 +38,8 @@ void Room::join(std::shared_ptr<Session> s, const std::string& username) {
                     {"username", p.username}
                 }}
             };
+        } else {
+            std::cout << "[DEBUG] Room::join - Player " << username << " already exists" << std::endl;
         }
 
         if (s) {
@@ -48,6 +52,7 @@ void Room::join(std::shared_ptr<Session> s, const std::string& username) {
 
     // Broadcast outside of mutex lock to avoid deadlock
     if (isNewPlayer) {
+        std::cout << "[DEBUG] Room::join - Broadcasting join message for: " << username << std::endl;
         broadcast(joinMsg.dump());
     }
 
@@ -84,12 +89,131 @@ void Room::broadcast(const std::string& msg) {
 
 bool Room::empty() {
     std::lock_guard<std::mutex> lock(m_mutex);
-    return m_sessions.empty();
+    return m_sessions.empty() && players.empty();
+}
+
+void Room::startRound(const std::string& word) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    currentRound.word = word;
+    currentRound.hint = std::string(word.size(), '_');
+    currentRound.startTime = std::chrono::steady_clock::now();
+    currentRound.active = true;
+
+    nlohmann::json msg = {
+        {"type", "round_start"},
+        {"payload", {
+            {"word", currentRound.word},
+            {"hint", currentRound.hint},
+            {"time", currentRound.duration}
+        }}
+    };
+    broadcast(msg.dump());
+    
+    // Start server-side timer
+    startServerTimer();
+}
+
+void Room::handleGuess(const std::string& username, const std::string& guess) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    if (!currentRound.active) {
+        std::cout << "[ROOM] Guess from " << username << " ignored - no active round" << std::endl;
+        return;
+    }
+    
+    std::cout << "[ROOM] Processing guess from " << username << ": " << guess << " (correct word: " << currentRound.word << ")" << std::endl;
+
+    if (guess == currentRound.word) {
+        // award points
+        if (players.find(username) != players.end()) {
+            players[username].score += 100; // basic scoring
+        }
+
+        nlohmann::json correctMsg = {
+            {"type", "guess"},
+            {"payload", {
+                {"user", username},
+                {"word", guess},
+                {"correct", true},
+                {"score", players.find(username) != players.end() ? players[username].score : 0}
+            }}
+        };
+        broadcast(correctMsg.dump());
+
+        // end round - call endRoundInternal to avoid deadlock
+        endRoundInternal();
+    }
+    else {
+        nlohmann::json wrongMsg = {
+            {"type", "guess"},
+            {"payload", {
+                {"user", username},
+                {"word", guess},
+                {"correct", false}
+            }}
+        };
+        broadcast(wrongMsg.dump());
+    }
 }
 
 void Room::endRound() {
-    json msg = { {"type","round_end"}, {"payload","Round finished!"} };
-    broadcast(msg.dump());
+    std::lock_guard<std::mutex> lock(m_mutex);
+    endRoundInternal();
+}
+
+void Room::endRoundInternal() {
+    if (!currentRound.active) return;
+    currentRound.active = false;
+
+    nlohmann::json endMsg = {
+        {"type","round_end"},
+        {"payload", {
+            {"word", currentRound.word},
+            {"scores", nlohmann::json::object()}
+        }}
+    };
+
+    for (auto& [username, p] : players) {
+        endMsg["payload"]["scores"][username] = p.score;
+    }
+
+    broadcast(endMsg.dump());
+}
+
+void Room::startServerTimer() {
+    // Start a thread to check timer every second
+    std::thread([this]() {
+        for (int i = 0; i < currentRound.duration; ++i) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            
+            // Check if round is still active
+            {
+                std::lock_guard<std::mutex> lock(m_mutex);
+                if (!currentRound.active) {
+                    return; // Round ended early (correct guess)
+                }
+            }
+        }
+        
+        // Timer expired - end the round
+        std::cout << "[ROOM] Server timer expired - ending round" << std::endl;
+        endRound();
+    }).detach();
+}
+
+void Room::checkTimer() {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    
+    if (!currentRound.active) return;
+    
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - currentRound.startTime);
+    
+    if (elapsed.count() >= currentRound.duration) {
+        std::cout << "[ROOM] Timer check - ending round" << std::endl;
+        endRoundInternal();
+    }
 }
 
 bool Room::hasPlayer(const std::string& username) {

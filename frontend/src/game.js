@@ -2,6 +2,7 @@ import state from "./state.js";
 import { connectWebSocket } from "./ws.js";
 import { spawnBot } from "./api/api.js";
 import { clearCanvas, setAllStrokes } from "./drawing.js";
+import { showConfirmDialog } from "./ui/dialog.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Get room info from URL parameters
@@ -14,6 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("No room code provided!");
     window.location.href = "/mainMenu.html";
     return;
+  }
+  
+  // Disable start button immediately to prevent quick clicks
+  const startBtn = document.getElementById('startRoundBtn');
+  if (startBtn) {
+    startBtn.disabled = true;
+    startBtn.textContent = '🎯 Connecting...';
   }
   
   // Set room name
@@ -50,13 +58,13 @@ async function checkAuthStatus() {
       const params = new URLSearchParams(window.location.search);
       const roomType = params.get('type');
       
-      if (roomType === 'create') {
-        console.log("[GAME] Spawning bot for streamer...");
-        spawnBot(state.user.username).then(res => console.log("[SPAWN BOT]", res));
-      }
-      
       // Connect to WebSocket and join the room
       state.ws = connectWebSocket(state.user);
+      
+      if (roomType === 'create') {
+        console.log("[GAME] Spawning bot for streamer...");
+        spawnBot(state.user.id).then(res => console.log("[SPAWN BOT]", res));
+      }
     } else {
       // Not logged in, redirect to login page
       window.location.href = "/";
@@ -70,6 +78,17 @@ async function checkAuthStatus() {
 function setupEventListeners() {
   // Back to Menu button
   document.getElementById("backToMenuBtn").addEventListener("click", async () => {
+    // Show custom confirmation dialog
+    const confirmed = await showConfirmDialog(
+      "Leave Room", 
+      "Are you sure you want to leave the room? All players will be disconnected and the session will end.",
+      "Leave Room",
+      "Cancel"
+    );
+    if (!confirmed) {
+      return; // User cancelled, don't proceed
+    }
+    
     // Clean up current room state
     console.log("[GAME] Cleaning up room state...");
     
@@ -86,27 +105,31 @@ function setupEventListeners() {
       setAllStrokes([]);
     }
     
-    // Close WebSocket connection
+    // Close WebSocket connection with intentional leave
     if (state.ws) {
-      console.log("[GAME] Closing WebSocket connection...");
+      console.log("[GAME] Sending intentional leave...");
+      const params = new URLSearchParams(window.location.search);
+      const roomCode = params.get('room');
+      state.ws.send(JSON.stringify({
+        type: "leave",
+        room: roomCode,
+        intentional: true
+      }));
       state.ws.close();
       state.ws = null;
     }
     
-    // Stop bot if user was the streamer
+    // Stop bot if user was the streamer (non-blocking)
     const params = new URLSearchParams(window.location.search);
     const roomType = params.get('type');
     
     if (roomType === 'create' && state.user) {
       console.log("[GAME] Stopping bot for streamer...");
-      try {
-        await fetch(`http://localhost:8000/api/bot/stop/${state.user.username}`, {
-          method: 'POST',
-          credentials: 'include'
-        });
-      } catch (err) {
-        console.error("Failed to stop bot:", err);
-      }
+      // Don't wait for bot stop - just redirect immediately
+      fetch(`http://localhost:8000/stop_bot/${state.user.id}`, {
+        method: 'POST',
+        credentials: 'include'
+      }).catch(err => console.error("Failed to stop bot:", err));
     }
     
     console.log("[GAME] Room cleanup complete, redirecting to main menu...");
@@ -160,6 +183,46 @@ function setupEventListeners() {
     ctx.strokeStyle = e.target.value;
   });
   
+  // Game control buttons
+  document.getElementById("startRoundBtn").addEventListener("click", async () => {
+    if (state.ws) {
+      const params = new URLSearchParams(window.location.search);
+      const roomCode = params.get('room');
+      const theme = params.get('theme') || 'random';
+      
+      try {
+        // Get random word from database
+        const response = await fetch(`http://localhost:8000/words/theme/${theme}`);
+        const wordData = await response.json();
+        const randomWord = wordData.word; // Extract just the word from the object
+        
+        state.ws.send(JSON.stringify({
+          type: "start_round",
+          room: roomCode,
+          payload: { word: randomWord }
+        }));
+        
+        // Disable start button during round
+        document.getElementById("startRoundBtn").disabled = true;
+        document.getElementById("startRoundBtn").textContent = "🎯 Round Active...";
+      } catch (error) {
+        console.error('Failed to get word from database:', error);
+        // Fallback to hardcoded word
+        const words = ["apple", "banana", "cat", "dog", "house", "car", "tree", "sun", "moon", "star"];
+        const randomWord = words[Math.floor(Math.random() * words.length)];
+        
+        state.ws.send(JSON.stringify({
+          type: "start_round",
+          room: roomCode,
+          payload: { word: randomWord }
+        }));
+        
+        document.getElementById("startRoundBtn").disabled = true;
+        document.getElementById("startRoundBtn").textContent = "🎯 Round Active...";
+      }
+    }
+  });
+
   // Set up canvas drawing
   setupCanvasDrawing();
 }
@@ -251,3 +314,5 @@ async function startNewRound() {
         }
     }
 }
+
+// Guesses come from Twitch chat, not web form

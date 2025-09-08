@@ -2,14 +2,6 @@
 #include "TwitchClient.h"
 #include "server.h"
 #include <iostream>
-#include <boost/asio.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/beast/websocket.hpp>
-#include <deque>
-#include <mutex>
-#include <string>
-#include <memory>
-#include "session.h"
 
 bool TwitchBotManager::spawnBot(const std::string& oauth,
     const std::string& nick,
@@ -22,6 +14,12 @@ bool TwitchBotManager::spawnBot(const std::string& oauth,
     }
 
     auto bot = std::make_shared<TwitchClient>(m_io, m_server, oauth, nick, channel);
+
+    // attach GameProtocol
+    if (gameProtocol_) {
+        bot->setGameProtocol(gameProtocol_);
+    }
+
     m_bots[channel] = bot;
     bot->connect();
 
@@ -33,7 +31,7 @@ void TwitchBotManager::stopBot(const std::string& channel) {
     auto it = m_bots.find(channel);
     if (it != m_bots.end()) {
         std::cout << "[INFO] Stopping bot for channel " << channel << "\n";
-        it->second->disconnect();   // implement this in TwitchClient
+        it->second->disconnect();
         m_bots.erase(it);
     }
     else {
@@ -43,12 +41,20 @@ void TwitchBotManager::stopBot(const std::string& channel) {
 }
 
 void TwitchBotManager::setCurrentRoom(const std::string& channel, const std::string& roomName) {
-    // Set current room for the specific channel's bot
+    std::cout << "[DEBUG] setCurrentRoom called for channel: " << channel << ", room: " << roomName << std::endl;
+    std::cout << "[DEBUG] m_bots size: " << m_bots.size() << std::endl;
+    for (auto& pair : m_bots) {
+        std::cout << "[DEBUG] Bot in map: " << pair.first << std::endl;
+    }
+    
     auto it = m_bots.find(channel);
     if (it != m_bots.end()) {
         it->second->setCurrentRoom(channel, roomName);
-        std::cout << "[DEBUG] Set current room for channel " << channel << " to: " << roomName << std::endl;
-    } else {
-        std::cout << "[WARN] No bot found for channel " << channel << " when setting room " << roomName << std::endl;
+        std::cout << "[DEBUG] Set current room for channel " << channel
+            << " to: " << roomName << std::endl;
+    }
+    else {
+        std::cout << "[WARN] No bot found for channel " << channel
+            << " when setting room " << roomName << std::endl;
     }
 }

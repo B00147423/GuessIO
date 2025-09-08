@@ -1,17 +1,17 @@
 #pragma once
 #include <string>
-#include <unordered_map>
+#include <memory>
 
-struct Player {
-    std::string username;
-    int score = 0;
-};
+class Room;
+class Server;
 
 class GameProtocol {
 public:
-    void handleCommand(const std::string& msg, Player& player);
-    void broadcast(const std::string& msg);
+    GameProtocol(Server* server);
+
+    // Handle raw command from Twitch or WebSocket
+    void handleCommand(const std::string& username, const std::string& msg, const std::string& channel);
 
 private:
-    std::unordered_map<int, Player> players_;
+    Server* server_;
 };

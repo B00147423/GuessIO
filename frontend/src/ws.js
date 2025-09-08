@@ -65,7 +65,7 @@ export function connectWebSocket(user) {
   };
 
   ws.onclose = (event) => {
-    console.log("❌ WebSocket closed with code:", event.code, "reason:", event.reason);
+    console.log("WebSocket closed with code:", event.code, "reason:", event.reason);
     
     // Handle different close codes
     if (event.code === 1000) {
@@ -100,7 +100,7 @@ export function connectWebSocket(user) {
   };
 
   ws.onerror = (error) => {
-    console.log("❌ WebSocket error:", error);
+    console.log(" WebSocket error:", error);
     showError("Connection error occurred. Please check your internet connection.");
   };
 
@@ -157,6 +157,22 @@ function handleServerMessage(msg) {
     console.log("[SYSTEM]", msg.payload);
   }
   
+  // Game logic handlers
+  else if (msg.type === "round_start") {
+    console.log("[ROUND START]", msg.payload);
+    handleRoundStart(msg.payload);
+  }
+  
+  else if (msg.type === "guess") {
+    console.log("[GUESS]", msg.payload);
+    handleGuess(msg.payload);
+  }
+  
+  else if (msg.type === "round_end") {
+    console.log("[ROUND END]", msg.payload);
+    handleRoundEnd(msg.payload);
+  }
+  
   // Handle state response - now uses instant drawing
   else if (msg.type === "current_state") {
     console.log("[CURRENT STATE]", msg.payload);
@@ -179,6 +195,69 @@ function handleServerMessage(msg) {
       console.log(`[DEBUG] All strokes displayed instantly!`);
     } else {
       console.log("[DEBUG] No strokes to restore");
+    }
+    
+    // Restore round state if active
+    if (msg.payload.round && msg.payload.round.active) {
+      console.log("[DEBUG] Restoring active round:", msg.payload.round);
+      
+      // Check if this is the streamer (room creator)
+      const params = new URLSearchParams(window.location.search);
+      const roomType = params.get('type');
+      const isStreamer = roomType === 'create';
+      
+      if (isStreamer) {
+        // For streamer, show word on page since round is already active
+        showWordOnPage(msg.payload.round.word);
+      } else {
+        // For viewers, show hint
+        const wordDisplay = document.getElementById('wordDisplay');
+        if (wordDisplay) {
+          wordDisplay.textContent = `🔍 Guess: ${msg.payload.round.hint}`;
+          wordDisplay.style.background = '#f0f0f0';
+          wordDisplay.style.color = '#333';
+          wordDisplay.style.display = 'block';
+        }
+      }
+      
+      // Disable start button since round is already active
+      const startBtn = document.getElementById('startRoundBtn');
+      if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.textContent = '🎯 Round Active';
+      }
+      
+      // Start the visual timer
+      const timerDisplay = document.getElementById('timerDisplay');
+      if (timerDisplay) {
+        let timeLeft = msg.payload.round.timeLeft;
+        timerDisplay.textContent = `Time: ${timeLeft}s`;
+        timerDisplay.style.display = 'block';
+        
+        // Clear any existing timer
+        if (window.roundTimer) {
+          clearInterval(window.roundTimer);
+        }
+        
+        // Start countdown (visual only - server controls actual timing)
+        window.roundTimer = setInterval(() => {
+          timeLeft--;
+          timerDisplay.textContent = `Time: ${timeLeft}s`;
+          
+          if (timeLeft <= 0) {
+            clearInterval(window.roundTimer);
+            timerDisplay.textContent = 'Time: 0s';
+            // Server will automatically end the round
+          }
+        }, 1000);
+      }
+    } else {
+      // No active round - enable start button
+      const startBtn = document.getElementById('startRoundBtn');
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.textContent = '🎯 Start Round';
+      }
     }
   }
 }
@@ -256,5 +335,157 @@ function showError(message, type = "error") {
       }
     `;
     document.head.appendChild(style);
+  }
+}
+
+// Word display on page for streamer (permanent, blacked out)
+function showWordOnPage(word) {
+  // Remove any existing word display
+  const existingDisplay = document.getElementById('streamerWordDisplay');
+  if (existingDisplay) {
+    existingDisplay.remove();
+  }
+  
+  // Create permanent word display in the right sidebar
+  const wordDisplay = document.createElement('div');
+  wordDisplay.id = 'streamerWordDisplay';
+  wordDisplay.style.cssText = `
+    background: #333;
+    color: #333;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid #333;
+  `;
+  
+  wordDisplay.textContent = word;
+  wordDisplay.title = 'Click to reveal word';
+  
+  // Add it to the right sidebar (game-display section)
+  const gameDisplay = document.querySelector('.game-display');
+  if (gameDisplay) {
+    gameDisplay.insertBefore(wordDisplay, gameDisplay.firstChild);
+  } else {
+    // Fallback to body if game-display not found
+    document.body.appendChild(wordDisplay);
+  }
+  
+  // Add click handler to reveal word
+  wordDisplay.addEventListener('click', function() {
+    this.style.background = 'rgba(255, 255, 255, 0.9)';
+    this.style.color = '#2d5a2d';
+    this.style.border = '2px solid #2d5a2d';
+    this.title = 'Word revealed';
+  });
+}
+
+// Game logic handlers
+function handleRoundStart(payload) {
+  console.log('[ROUND START] Received payload:', payload);
+  
+  // Check if this is the streamer (room creator)
+  const params = new URLSearchParams(window.location.search);
+  const roomType = params.get('type');
+  const isStreamer = roomType === 'create';
+  
+  if (isStreamer) {
+    // Show word on page (blacked out) for streamer
+    console.log('Showing word on page:', payload.word);
+    showWordOnPage(payload.word || 'NO WORD RECEIVED');
+  } else {
+    // Show hint for viewers
+    const wordDisplay = document.getElementById('wordDisplay');
+    if (wordDisplay) {
+      wordDisplay.textContent = ` Guess: ${payload.hint}`;
+      wordDisplay.style.background = '#f0f0f0';
+      wordDisplay.style.color = '#333';
+      wordDisplay.style.display = 'block';
+    }
+  }
+  
+  // Show timer (server-controlled)
+  const timerDisplay = document.getElementById('timerDisplay');
+  if (timerDisplay) {
+    let timeLeft = payload.time || 60;
+    timerDisplay.textContent = `Time: ${timeLeft}s`;
+    timerDisplay.style.display = 'block';
+    
+    // Clear any existing timer
+    if (window.roundTimer) {
+      clearInterval(window.roundTimer);
+    }
+    
+    // Start countdown (visual only - server controls actual timing)
+    window.roundTimer = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = `Time: ${timeLeft}s`;
+      
+      if (timeLeft <= 0) {
+        clearInterval(window.roundTimer);
+        timerDisplay.textContent = 'Time: 0s';
+        // Server will automatically end the round
+      }
+    }, 1000);
+  }
+}
+
+function handleGuess(payload) {
+  // Show guess result
+  const guessDisplay = document.getElementById('guessDisplay');
+  if (guessDisplay) {
+    if (payload.correct) {
+      // Show success message like Skribbl.io
+      const score = payload.score ? ` (${payload.score} pts)` : '';
+      guessDisplay.innerHTML += `${payload.user} guessed "${payload.word}"${score}<br>`;
+      
+      // Show success notification
+      showError(`🎉 ${payload.user} guessed correctly!`, "success");
+    } else {
+      // Show incorrect guess
+      guessDisplay.innerHTML += `${payload.user}: "${payload.word}"<br>`;
+    }
+    guessDisplay.scrollTop = guessDisplay.scrollHeight;
+  }
+}
+
+function handleRoundEnd(payload) {
+  // Show final word
+  const wordDisplay = document.getElementById('wordDisplay');
+  if (wordDisplay) {
+    wordDisplay.textContent = `Word was: ${payload.word}`;
+  }
+  
+  // Show final scores
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  if (scoreDisplay && payload.scores) {
+    scoreDisplay.innerHTML = '<h3>Final Scores:</h3>';
+    for (const [player, score] of Object.entries(payload.scores)) {
+      scoreDisplay.innerHTML += `<div>${player}: ${score} points</div>`;
+    }
+  }
+  
+  // Clear guess display
+  const guessDisplay = document.getElementById('guessDisplay');
+  if (guessDisplay) {
+    guessDisplay.innerHTML = '';
+  }
+  
+  // Re-enable start button
+  const startBtn = document.getElementById('startRoundBtn');
+  if (startBtn) {
+    startBtn.disabled = false;
+    startBtn.textContent = ' Start Round';
+  }
+  
+  // Hide timer
+  const timerDisplay = document.getElementById('timerDisplay');
+  if (timerDisplay) {
+    timerDisplay.style.display = 'none';
   }
 }

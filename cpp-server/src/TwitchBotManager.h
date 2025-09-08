@@ -3,21 +3,9 @@
 #include <memory>
 #include <string>
 #include "TwitchClient.h"
-#include <iostream>
-#include "TwitchBotManager.h"
-#include "TwitchClient.h"
 #include "server.h"
-#include <iostream>
-#include <boost/asio.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/beast/websocket.hpp>
-#include <deque>
-#include <mutex>
-#include <string>
-#include <memory>
-#include "session.h"
+#include "GameProtocol.h"
 
-// Forward declaration to avoid circular dependency
 class Server;
 
 class TwitchBotManager {
@@ -29,10 +17,15 @@ public:
     bool spawnBot(const std::string& oauth,
         const std::string& nick,
         const std::string& channel);
-    void stopBot(const std::string& channel);  // add this
-    void setCurrentRoom(const std::string& channel, const std::string& roomName); // Set current room for specific channel
+    void stopBot(const std::string& channel);
+    void setCurrentRoom(const std::string& channel, const std::string& roomName);
+
+    // attach a shared GameProtocol to all bots
+    void setGameProtocol(std::shared_ptr<GameProtocol> gp) { gameProtocol_ = gp; }
+
 private:
     boost::asio::io_context& m_io;
     Server& m_server;
     std::unordered_map<std::string, std::shared_ptr<TwitchClient>> m_bots;
+    std::shared_ptr<GameProtocol> gameProtocol_; // NEW
 };

@@ -169,7 +169,7 @@ def auth_callback(code: str, db: Session = Depends(get_db)):
         )
 
     # 4. Set cookie and redirect
-    response = RedirectResponse(url=FRONTEND_URL)
+    response = RedirectResponse(url=FRONTEND_URL)   
     response.set_cookie(
         key="session_user",
         value=str(user.id),

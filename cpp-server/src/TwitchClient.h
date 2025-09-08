@@ -4,7 +4,7 @@
 #include <string>
 #include "server.h"
 #include <unordered_map>
-
+#include "GameProtocol.h"   // NEW include
 class TwitchClient : public std::enable_shared_from_this<TwitchClient> {
 public:
     TwitchClient(boost::asio::io_context& io,
@@ -16,6 +16,7 @@ public:
     void connect();
     void disconnect();
     void setCurrentRoom(const std::string& channel, const std::string& roomName);
+    void setGameProtocol(std::shared_ptr<GameProtocol> gp) { gameProtocol_ = gp; }
 
 private:
     void login();
@@ -31,4 +32,6 @@ private:
     std::string m_nick;
     std::string m_channel;
     std::unordered_map<std::string, std::string> m_channelRooms; // Track current room per channel
+
+    std::shared_ptr<GameProtocol> gameProtocol_;
 };

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GuessIO - Game Room</title>
   <link rel="stylesheet" href="./src/style.css" />
+  <link rel="stylesheet" href="./src/css/dialog.css" />
 </head>
 <body>
   <div class="container">
@@ -33,8 +34,16 @@
       </div>
       
       <div class="game-main">
+        <div class="left-sidebar">
+          <div class="player-list">
+            <h4>👥 Players</h4>
+            <ul id="players"></ul>
+          </div>
+        </div>
+        
         <canvas id="draw" width="800" height="600"></canvas>
-        <div class="game-sidebar">
+        
+        <div class="right-sidebar">
           <div class="drawing-tools">
             <h4>🎨 Tools</h4>
             <input type="color" id="colorPicker" value="#000000" />
@@ -48,11 +57,19 @@
           <div class="game-controls">
             <button id="clearBtn" class="btn btn-secondary">🗑️ Clear Canvas</button>
             <button id="undoBtn" class="btn btn-secondary">↶ Undo</button>
+            <button id="startRoundBtn" class="btn btn-primary">🎯 Start Round</button>
           </div>
           
-          <div class="player-list">
-            <h4>👥 Players in Room</h4>
-            <ul id="players"></ul>
+          <!-- Game Display Elements -->
+          <div class="game-display">
+            <div id="wordDisplay" style="display: none; background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold;"></div>
+            <div id="timerDisplay" style="display: none; background: #e0e0e0; padding: 5px; margin: 5px 0; border-radius: 3px;"></div>
+            <div class="guess-info" style="margin: 10px 0; padding: 10px; background: #f0f8ff; border-radius: 5px; text-align: center;">
+              <p style="margin: 0; color: #333;">💬 <strong>Viewers guess in Twitch chat:</strong></p>
+              <p style="margin: 5px 0 0 0; color: #666; font-family: monospace;">!guess your_word_here</p>
+            </div>
+            <div id="guessDisplay" style="max-height: 200px; overflow-y: auto; background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 5px;"></div>
+            <div id="scoreDisplay" style="background: #fff; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ddd;"></div>
           </div>
         </div>
       </div>

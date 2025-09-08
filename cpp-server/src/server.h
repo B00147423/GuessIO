@@ -26,6 +26,7 @@ public:
 		const std::string& channel);
 	bool stopBot(const std::string& channel);
 	void setCurrentRoom(const std::string& channel, const std::string& roomName); // Set current room for specific channel
+	RoomManager& getRoomManager() { return m_roomManager; }
 private:
 	void doAccept();
 
