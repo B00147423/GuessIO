@@ -15,12 +15,12 @@ from db import engine, Base
 from models import user, score, word, history
 
 # Import routers
+
 from routers import users, words, scores, rooms
 from api import auth
 from api import api as api_router
-
-# Create tables if not exist (skip for now to avoid DB issues)
-# Base.metadata.create_all(bind=engine)
+# Create tables if not exist
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Guessio Backend")
 
