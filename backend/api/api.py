@@ -46,7 +46,7 @@ async def stop_bot(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         return {"status": "error", "message": "User not found"}
-
+#stop bot
     try:
         uri = "ws://localhost:9001"
         async with websockets.connect(uri) as ws:
