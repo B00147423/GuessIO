@@ -15,7 +15,6 @@ from db import engine, Base
 from models import user, score, word, history
 
 # Import routers
-
 from routers import users, words, scores, rooms
 from api import auth
 from api import api as api_router
