@@ -37,11 +37,13 @@ app.add_middleware(
 
 # Mount frontend (optional, just for testing local frontend)
 frontend_path = os.path.join(os.path.dirname(__file__), "../frontend")
-app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+if os.path.exists(frontend_path):
+    app.mount("/static", StaticFiles(directory=frontend_path), name="static")
 
-@app.get("/")
-async def serve_index():
-    return FileResponse(os.path.join(frontend_path, "index.html"))
+    @app.get("/")
+    async def serve_index():
+        return FileResponse(os.path.join(frontend_path, "index.html"))
+
 
 # Attach DB routers
 app.include_router(users.router)
