@@ -44,9 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
 });
 
+// Get API base URL from environment or default to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
 async function checkAuthStatus() {
   try {
-    const res = await fetch("http://localhost:8000/auth/me", {
+    const res = await fetch(`${API_BASE_URL}/auth/me`, {
       credentials: "include"
     });
     const data = await res.json();
@@ -126,7 +129,7 @@ function setupEventListeners() {
     if (roomType === 'create' && state.user) {
       console.log("[GAME] Stopping bot for streamer...");
       // Don't wait for bot stop - just redirect immediately
-      fetch(`http://localhost:8000/stop_bot/${state.user.id}`, {
+      fetch(`${API_BASE_URL}/stop_bot/${state.user.id}`, {
         method: 'POST',
         credentials: 'include'
       }).catch(err => console.error("Failed to stop bot:", err));
@@ -192,7 +195,7 @@ function setupEventListeners() {
       
       try {
         // Get random word from database
-        const response = await fetch(`http://localhost:8000/words/theme/${theme}`);
+        const response = await fetch(`${API_BASE_URL}/words/theme/${theme}`);
         const wordData = await response.json();
         const randomWord = wordData.word; // Extract just the word from the object
         
@@ -287,7 +290,7 @@ function sendStroke(action, payload) {
 // Function to get a word based on theme
 async function getWordByTheme(theme) {
     try {
-        const response = await fetch(`http://localhost:8000/words/theme/${theme}`);
+        const response = await fetch(`${API_BASE_URL}/words/theme/${theme}`);
         if (response.ok) {
             const wordData = await response.json();
             return wordData.word;

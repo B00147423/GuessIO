@@ -18,10 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
   checkAuthStatus();
 });
 
+// Get API base URL from environment or default to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
 async function checkAuthStatus() {
   try {
     console.log("Checking auth status...");
-    const res = await fetch("http://localhost:8000/auth/me", {
+    const res = await fetch(`${API_BASE_URL}/auth/me`, {
       credentials: "include"
     });
     const data = await res.json();
@@ -46,24 +49,30 @@ async function checkAuthStatus() {
 // Game initialization will happen in game.js
 
 // ✅ Login
-document.getElementById("twitchLoginBtn").addEventListener("click", async () => {
-  console.log("Twitch login button clicked!");
-  try {
-    console.log("Getting login URL...");
-    const data = await getLoginUrl();
-    console.log("Login URL received:", data);
-    window.location.href = data.url;
-  } catch (error) {
-    console.error("Error getting login URL:", error);
-  }
-});
+const twitchLoginBtn = document.getElementById("twitchLoginBtn");
+if (twitchLoginBtn) {
+  twitchLoginBtn.addEventListener("click", async () => {
+    console.log("Twitch login button clicked!");
+    try {
+      console.log("Getting login URL...");
+      const data = await getLoginUrl();
+      console.log("Login URL received:", data);
+      window.location.href = data.url;
+    } catch (error) {
+      console.error("Error getting login URL:", error);
+    }
+  });
+}
 
 // ✅ Logout - redirect to login page
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  if (state.user) {
-    await stopBot(state.user.id);
-    state.user = null;
-  }
-  // Stay on login page
-  window.location.reload();
-});
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    if (state.user) {
+      await stopBot(state.user.id);
+      state.user = null;
+    }
+    // Stay on login page
+    window.location.reload();
+  });
+}

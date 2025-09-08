@@ -34,9 +34,12 @@ async function checkAuthStatus() {
   }
 }
 
+// Get API base URL from environment or default to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
 async function performAuthCheck() {
   try {
-    const res = await fetch("http://localhost:8000/auth/me", {
+    const res = await fetch(`${API_BASE_URL}/auth/me`, {
       credentials: "include"
     });
     const data = await res.json();
@@ -115,7 +118,7 @@ function setupEventListeners() {
       lastAuthCheck = 0;
       
       // Try backend logout but don't wait for it
-      fetch("http://localhost:8000/auth/logout", {
+      fetch(`${API_BASE_URL}/auth/logout`, {
         method: "POST",
         credentials: "include"
       }).catch(err => console.log("Backend logout failed:", err));
