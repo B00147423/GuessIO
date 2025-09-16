@@ -3,7 +3,8 @@ uvicorn
 python-multipart
 python-dotenv
 sqlalchemy==1.4.49
-databases
+databases[postgresql]
 alembic
 requests
 websockets
+psycopg2-binary
