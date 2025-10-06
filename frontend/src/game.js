@@ -164,27 +164,26 @@ function setupEventListeners() {
   });
   
   // Brush size buttons
-  document.querySelectorAll('.brush-size').forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Remove active class from all buttons
-      document.querySelectorAll('.brush-size').forEach(b => b.classList.remove('active'));
-      // Add active class to clicked button
-      btn.classList.add('active');
-      
-      // Set line width
-      const size = parseInt(btn.dataset.size);
-      const canvas = document.getElementById("draw");
-      const ctx = canvas.getContext("2d");
-      ctx.lineWidth = size;
-    });
-  });
-  
-  // Color picker
-  document.getElementById("colorPicker").addEventListener("input", (e) => {
-    const canvas = document.getElementById("draw");
-    const ctx = canvas.getContext("2d");
-    ctx.strokeStyle = e.target.value;
-  });
+// Brush size slider
+document.getElementById("brushSize").addEventListener("input", (e) => {
+  const size = parseInt(e.target.value, 10);
+  const ctx = document.getElementById("draw").getContext("2d");
+  ctx.lineWidth = size;
+});
+
+// Color + alpha together
+const ctx = document.getElementById("draw").getContext("2d");
+function updateStroke() {
+  const hex = document.getElementById("colorPicker").value;
+  const alpha = parseFloat(document.getElementById("alphaPicker").value);
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+document.getElementById("colorPicker").addEventListener("input", updateStroke);
+document.getElementById("alphaPicker").addEventListener("input", updateStroke);
+updateStroke(); // set defaults once
   
   // Game control buttons
   document.getElementById("startRoundBtn").addEventListener("click", async () => {
