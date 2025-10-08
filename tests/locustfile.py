@@ -1,7 +1,7 @@
 from locust import User, task, between, events
 import websocket, json, random, time
 
-ROOM_COUNT = 50  # number of rooms to simulate
+ROOM_COUNT = 50 
 
 def fire_event(name, start, size=0, exc=None):
     """Helper to record Locust metrics"""
@@ -30,8 +30,6 @@ class GuessIOUser(User):
         self.username = f"user_{random.randint(1, 99999)}"
         self.room = f"room_{(self.environment.runner.user_count % ROOM_COUNT) + 1}"
 
-
-        # join the room
         payload = {
             "type": "join",
             "room": self.room,
