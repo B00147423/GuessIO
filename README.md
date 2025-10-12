@@ -22,20 +22,20 @@ GuessIO is a sophisticated multiplayer drawing game that combines real-time WebS
 - **Docker Deployment**: Production-ready containerization
 - **High Performance**: C++ game server for low-latency gameplay
 
-## 🖼️ Screenshots
+##  Screenshots
 
-### Create Room
-![Create Room](screenshots/create%20room%20-%20Theme%20.png)
 
-### Created Room
-![Created Room](screenshots/created%20room..png)
+### Homepage .png
+![Homepage](screenshots/Homepage%20.png)
 
-### Drawing
-![Drawing](screenshots/Screenshot%202025-10-12%20182358.png)
+### themes.png
+![themes](screenshots/themes.png)
 
-### Selecting Color
-![Selecting Color](screenshots/selecting%20color.png)
+### createdRoom.png
+![createdRoom](screenshots/createdRoom.png)
 
+### selectingColor.png
+![selectingColor](screenshots/selectingColor.png)
 
 ## Architecture
 
