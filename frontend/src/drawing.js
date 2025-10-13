@@ -133,11 +133,13 @@ export function replayStroke(strokeData) {
 }
 
 export function redrawAllStrokes() {
+  console.log("[DRAWING] Redrawing all strokes:", allStrokes.length, "strokes");
   // Clear the canvas first
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
   // Draw all strokes at once
-  allStrokes.forEach(strokeData => {
+  allStrokes.forEach((strokeData, index) => {
+    console.log(`[DRAWING] Drawing stroke ${index + 1}:`, strokeData);
     const payload = strokeData.payload;
     
     if (payload && payload.action === "start") {
@@ -187,6 +189,8 @@ export function clearAllState() {
 
 // Function to handle when we get the full state from server
 export function setAllStrokes(strokes) {
+  console.log("[DRAWING] Setting all strokes:", strokes ? strokes.length : 0, "strokes");
   allStrokes = strokes || [];
   redrawAllStrokes();
+  console.log("[DRAWING] All strokes redrawn successfully");
 }
