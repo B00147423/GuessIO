@@ -11,7 +11,7 @@
   <div class="container">
     <header class="header">
       <div class="logo-container">
-        <div class="logo-icon">🎨</div>
+        <div class="logo-icon"></div>
         <h1 class="logo">GuessIO</h1>
       </div>
       <div class="live-indicator">
@@ -19,15 +19,17 @@
         <span>LIVE</span>
       </div>
     </header>
-
+<div id="messageArea"></div>
+<div id="scoreboard"></div>
     <!-- Game Section -->
     <div class="game-container">
       <div class="game-header">
         <div class="game-info">
           <h3 id="roomName">Room: Loading...</h3>
           <div class="game-status">
+            <span id="currentUser">Loading user...</span>
             <span id="playerCount">0 players</span>
-            <span id="gameTimer">⏱️ 0:00</span>
+             <span id="timerDisplay"></span>
           </div>
         </div>
         <button id="backToMenuBtn" class="btn btn-danger">← Back to Menu</button>
@@ -66,7 +68,7 @@
           <!-- Game Display Elements -->
           <div class="game-display">
             <div id="wordDisplay" style="display: none; background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold;"></div>
-            <div id="timerDisplay" style="display: none; background: #e0e0e0; padding: 5px; margin: 5px 0; border-radius: 3px;"></div>
+            <!-- <div id="timerDisplay" style="display: none; background: #e0e0e0; padding: 5px; margin: 5px 0; border-radius: 3px;"></div> -->
             <div class="guess-info" style="margin: 10px 0; padding: 10px; background: #f0f8ff; border-radius: 5px; text-align: center;">
               <p style="margin: 0; color: #333;">💬 <strong>Viewers guess in Twitch chat:</strong></p>
               <p style="margin: 5px 0 0 0; color: #666; font-family: monospace;">!guess your_word_here</p>
