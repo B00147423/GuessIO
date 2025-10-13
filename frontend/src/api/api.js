@@ -8,8 +8,8 @@ export async function getLoginUrl() {
   return res.json();
 }
 
-export async function spawnBot(userId) {
-  const res = await fetch(`${API_BASE_URL}/spawn_bot/${userId}`, {
+export async function spawnBot(userId, roomId) {
+  const res = await fetch(`${API_BASE_URL}/spawn_bot/${userId}?room_id=${roomId}`, {
     method: "POST",
     credentials: "include"
   });
@@ -19,7 +19,7 @@ export async function spawnBot(userId) {
 export async function stopBot(userId) {
   const res = await fetch(`${API_BASE_URL}/stop_bot/${userId}`, {
     method: "POST",
-    credentials: "include"
+    credentials: "include",
   });
   return res.json();
 }

@@ -18,8 +18,8 @@ export function connectWebSocket(user) {
   console.log("[WS] Clearing previous room state...");
   state.players.clear();
   
-  // Clear drawing state
-  clearAllState();
+  // Don't clear drawing state here - let the server restore it
+  // clearAllState();
   
   // Clear any existing WebSocket connection
   if (state.ws) {
@@ -53,7 +53,7 @@ export function connectWebSocket(user) {
           room: roomCode
         }));
         console.log("get_state sent!");
-      }, 200);
+      }, 500);
     }, 100);
   };
 
@@ -188,13 +188,22 @@ function handleServerMessage(msg) {
       renderPlayers();
     }
     
+    // Ensure current user is in the players list
+    if (state.user && state.user.username && !state.players.has(state.user.username)) {
+      console.log("[DEBUG] Adding current user to players list:", state.user.username);
+      state.players.add(state.user.username);
+      renderPlayers();
+    }
+    
     // Restore drawing strokes INSTANTLY
     if (msg.payload.strokes && msg.payload.strokes.length > 0) {
       console.log(`[DEBUG] Setting ${msg.payload.strokes.length} strokes for instant display...`);
       setAllStrokes(msg.payload.strokes);
       console.log(`[DEBUG] All strokes displayed instantly!`);
     } else {
-      console.log("[DEBUG] No strokes to restore");
+      console.log("[DEBUG] No strokes to restore - clearing canvas");
+      // Clear canvas if no strokes to restore
+      clearAllState();
     }
     
     // Restore round state if active
