@@ -22,6 +22,8 @@ from api import api as api_router
 # Create tables if not exist
 Base.metadata.create_all(bind=engine)
 
+
+
 app = FastAPI(title="Guessio Backend")
 
 # Add CORS middleware
