@@ -7,8 +7,21 @@ import json
 import websockets
 from fastapi import FastAPI
 app = FastAPI()
-
+from api.grpc_client import GuessIOClient
 router = APIRouter()
+
+client = GuessIOClient()
+
+@router.post("/join")
+def join(username: str):
+    message = client.join_game(username)
+    return {"response": message}
+
+@router.post("/guess")
+def guess(username: str, guess: str):
+    result = client.make_guess(username, guess)
+    return result
+
 
 @router.post("/spawn_bot/{user_id}")
 async def spawn_bot(user_id: int, db: Session = Depends(get_db)):
