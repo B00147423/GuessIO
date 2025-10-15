@@ -25,6 +25,9 @@ services:
     depends_on:
       - postgres
 
+  # Note: C++ gRPC server runs separately (outside Docker)
+  # Make sure your C++ server is running on localhost:50051
+
   postgres:
     image: postgres:15
     environment:
