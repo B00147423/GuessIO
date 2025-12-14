@@ -68,24 +68,9 @@ graph TB
         O[PostgreSQL]
         P[Twitch OAuth]
     end
-    
-    A --> B
-    B --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> N
-    H --> I
-    H --> J
-    H --> K
-    I --> P
-    J --> O
-    K --> O
-    L -.->|gRPC| M
-    M --> G
 ```
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 ### **Backend Services**
 - **Game Server**: C++ with Boost.Asio for high-performance WebSocket handling
