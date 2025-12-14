@@ -37,39 +37,6 @@ GuessIO is a sophisticated multiplayer drawing game that combines real-time WebS
 ### selectingColor.png
 ![selectingColor](screenshots/selectingColor.png)
 
-## Architecture
-
-```mermaid
-graph TB
-    subgraph "Frontend Layer"
-        A[React/Vite Frontend]
-        B[WebSocket Client]
-        C[Drawing Canvas]
-    end
-    
-    subgraph "Backend API (Python/Docker)"
-        H[FastAPI Server]
-        I[User Management]
-        J[Score System]
-        K[Word Database]
-        L[gRPC Client]
-    end
-    
-    subgraph "Game Server (C++/Local)"
-        D[WebSocket Server]
-        E[Room Manager]
-        F[Game Protocol]
-        G[Twitch Bot Manager]
-        M[gRPC Server]
-    end
-    
-    subgraph "External Services"
-        N[Twitch IRC]
-        O[PostgreSQL]
-        P[Twitch OAuth]
-    end
-```
-
 ##  Technology Stack
 
 ### **Backend Services**
@@ -157,18 +124,6 @@ docker-compose up --build
 4. **Guessing**: Players submit guesses through the web interface or Twitch chat
 5. **Scoring**: Points awarded for correct guesses and successful drawings
 6. **Leaderboards**: Track progress across multiple games
-
-## 🔧 Development
-
-### Project Structure
-```
-GuessIO/
-├── frontend/          # React/Vite frontend application
-├── backend/           # FastAPI backend with database
-├── cpp-server/        # High-performance C++ game server
-├── tests/             # Load testing with Locust
-└── docker-compose.yml # Container orchestration
-```
 
 ### Key Components
 
