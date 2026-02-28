@@ -2,7 +2,7 @@
 
 ## ✅ COMPLETED FEATURES
 
-### 1. **Core Game State Management** ✅
+### 1. **Core Game State Management** 
 - **Per-round state machine**: Implemented in `Room` class with `currentRound` struct
 - **Game phases**: Lobby, countdown, round, results, reset cycle working
 - **Round lifecycle**: `startRound()`, `handleGuess()`, `endRound()` with proper state transitions
@@ -10,7 +10,7 @@
 - **Player management**: Deduplication with `std::unordered_map<string, Player> players`
 - **Player IDs**: Each player gets unique ID (`nextPlayerId++`)
 
-### 2. **WebSocket Infrastructure** ✅
+### 2. **WebSocket Infrastructure** 
 - **Connection management**: Proper session handling with cleanup on disconnect
 - **Heartbeat/PING**: 30-second ping/pong with timeout detection
 - **Structured protocol**: JSON messages with `type` and `payload` fields
@@ -115,7 +115,7 @@
 
 ---
 
-## 🎯 PRIORITY ORDER
+## PRIORITY ORDER
 
 ### **High Priority (Core Game Experience)**
 1. **Score Persistence** - Players need to see their progress
@@ -134,7 +134,7 @@
 
 ---
 
-## 📊 CURRENT STATUS
+## CURRENT STATUS
 
 **Core Game**: ✅ **COMPLETE** - Basic game loop, WebSocket, Twitch integration working
 **Backend API**: ✅ **COMPLETE** - Full REST API with database and auth

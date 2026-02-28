@@ -1,7 +1,5 @@
 import grpc
-from ..grpc import guessio_pb2, guessio_pb2_grpc
-
-
+from guessio_grpc import guessio_pb2, guessio_pb2_grpc
 class GuessIOClient:
     def __init__(self, host="localhost", port=50051):
         self.channel = grpc.insecure_channel(f"{host}:{port}")

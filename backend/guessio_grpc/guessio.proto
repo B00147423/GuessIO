@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package guessio;
+package guessio_grpc;
 
 // Messages
 message JoinRequest {

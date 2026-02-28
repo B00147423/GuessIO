@@ -3,9 +3,9 @@
 import grpc
 import warnings
 
-import guessio_pb2 as guessio__pb2
+from guessio_grpc import guessio_pb2 as guessio__grpc_dot_guessio__pb2
 
-GRPC_GENERATED_VERSION = '1.75.1'
+GRPC_GENERATED_VERSION = '1.76.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -18,7 +18,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in guessio_pb2_grpc.py depends on'
+        + ' but the generated code in guessio_grpc/guessio_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -36,14 +36,14 @@ class GuessServiceStub(object):
             channel: A grpc.Channel.
         """
         self.JoinGame = channel.unary_unary(
-                '/guessio.GuessService/JoinGame',
-                request_serializer=guessio__pb2.JoinRequest.SerializeToString,
-                response_deserializer=guessio__pb2.JoinReply.FromString,
+                '/guessio_grpc.GuessService/JoinGame',
+                request_serializer=guessio__grpc_dot_guessio__pb2.JoinRequest.SerializeToString,
+                response_deserializer=guessio__grpc_dot_guessio__pb2.JoinReply.FromString,
                 _registered_method=True)
         self.MakeGuess = channel.unary_unary(
-                '/guessio.GuessService/MakeGuess',
-                request_serializer=guessio__pb2.GuessRequest.SerializeToString,
-                response_deserializer=guessio__pb2.GuessReply.FromString,
+                '/guessio_grpc.GuessService/MakeGuess',
+                request_serializer=guessio__grpc_dot_guessio__pb2.GuessRequest.SerializeToString,
+                response_deserializer=guessio__grpc_dot_guessio__pb2.GuessReply.FromString,
                 _registered_method=True)
 
 
@@ -68,19 +68,19 @@ def add_GuessServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'JoinGame': grpc.unary_unary_rpc_method_handler(
                     servicer.JoinGame,
-                    request_deserializer=guessio__pb2.JoinRequest.FromString,
-                    response_serializer=guessio__pb2.JoinReply.SerializeToString,
+                    request_deserializer=guessio__grpc_dot_guessio__pb2.JoinRequest.FromString,
+                    response_serializer=guessio__grpc_dot_guessio__pb2.JoinReply.SerializeToString,
             ),
             'MakeGuess': grpc.unary_unary_rpc_method_handler(
                     servicer.MakeGuess,
-                    request_deserializer=guessio__pb2.GuessRequest.FromString,
-                    response_serializer=guessio__pb2.GuessReply.SerializeToString,
+                    request_deserializer=guessio__grpc_dot_guessio__pb2.GuessRequest.FromString,
+                    response_serializer=guessio__grpc_dot_guessio__pb2.GuessReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'guessio.GuessService', rpc_method_handlers)
+            'guessio_grpc.GuessService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('guessio.GuessService', rpc_method_handlers)
+    server.add_registered_method_handlers('guessio_grpc.GuessService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -102,9 +102,9 @@ class GuessService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/guessio.GuessService/JoinGame',
-            guessio__pb2.JoinRequest.SerializeToString,
-            guessio__pb2.JoinReply.FromString,
+            '/guessio_grpc.GuessService/JoinGame',
+            guessio__grpc_dot_guessio__pb2.JoinRequest.SerializeToString,
+            guessio__grpc_dot_guessio__pb2.JoinReply.FromString,
             options,
             channel_credentials,
             insecure,
@@ -129,9 +129,9 @@ class GuessService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/guessio.GuessService/MakeGuess',
-            guessio__pb2.GuessRequest.SerializeToString,
-            guessio__pb2.GuessReply.FromString,
+            '/guessio_grpc.GuessService/MakeGuess',
+            guessio__grpc_dot_guessio__pb2.GuessRequest.SerializeToString,
+            guessio__grpc_dot_guessio__pb2.GuessReply.FromString,
             options,
             channel_credentials,
             insecure,

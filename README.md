@@ -103,10 +103,6 @@ ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 
 ### 4. Start the Docker Services
 ```bash
-# Development environment
-docker-compose -f docker-compose.dev.yml up --build
-
-# Production environment
 docker-compose up --build
 ```
 
