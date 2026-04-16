@@ -45,24 +45,25 @@ async function checkAuthStatus() {
   }
 }
 
-// This function is no longer needed in the login page
-// Game initialization will happen in game.js
-
-// ✅ Login
-const twitchLoginBtn = document.getElementById("twitchLoginBtn");
-if (twitchLoginBtn) {
-  twitchLoginBtn.addEventListener("click", async () => {
-    console.log("Twitch login button clicked!");
-    try {
-      console.log("Getting login URL...");
-      const data = await getLoginUrl();
-      console.log("Login URL received:", data);
-      window.location.href = data.url;
-    } catch (error) {
-      console.error("Error getting login URL:", error);
-    }
-  });
+async function startTwitchLogin() {
+  console.log("Twitch login button clicked!");
+  try {
+    console.log("Getting login URL...");
+    const data = await getLoginUrl();
+    console.log("Login URL received:", data);
+    window.location.href = data.url;
+  } catch (error) {
+    console.error("Error getting login URL:", error);
+  }
 }
+
+// ✅ Login (supports multiple CTAs on landing)
+const twitchLoginButtons = document.querySelectorAll(
+  "#twitchLoginBtn, .js-twitch-login"
+);
+twitchLoginButtons.forEach((btn) => {
+  btn.addEventListener("click", startTwitchLogin);
+});
 
 // ✅ Logout - redirect to login page
 const logoutBtn = document.getElementById("logoutBtn");
