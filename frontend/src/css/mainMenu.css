@@ -1,80 +1,179 @@
-/* Main Menu Styles */
-.user-info {
+/* Main Menu — matches landing page (dark glass, Twitch purple) */
+
+.menu-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-header {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px 20px 0;
 }
 
-.user-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 3px solid #fff;
+.menu-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: rgba(233, 234, 242, 0.96);
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
 }
 
-.user-welcome {
+.menu-brand__mark {
+    font-size: 1.35rem;
+}
+
+.menu-brand:hover {
     color: #fff;
-    font-size: 18px;
-    font-weight: 600;
 }
 
-.main-menu {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
+.user-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px 8px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.user-pill__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(145, 70, 255, 0.55);
+}
+
+.user-pill__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.2;
+    min-width: 0;
+}
+
+.user-pill__label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(233, 234, 242, 0.55);
+}
+
+.user-pill__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(233, 234, 242, 0.96);
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.menu-main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px 40px;
+}
+
+.menu-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px 28px 28px;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
 }
 
-.main-menu h1 {
-    font-size: 3rem;
+.menu-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(145, 70, 255, 0.9);
     margin-bottom: 10px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
-.main-menu p {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 30px;
+.menu-title {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: rgba(233, 234, 242, 0.98);
+    margin-bottom: 10px;
+}
+
+.menu-desc {
+    font-size: 15px;
+    line-height: 1.5;
+    color: rgba(233, 234, 242, 0.68);
+    margin-bottom: 28px;
 }
 
 .menu-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    max-width: 400px;
-    margin: 0 auto;
+    gap: 12px;
 }
 
-.room-input {
-    padding: 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    font-size: 16px;
+.menu-btn {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 14px 18px;
+}
+
+.menu-btn__icon {
+    font-size: 1.15rem;
+    line-height: 1;
+    opacity: 0.95;
+}
+
+.menu-btn--primary {
+    font-size: 15px;
+}
+
+.menu-btn--logout {
+    margin-top: 8px;
+}
+
+.menu-footnote {
+    margin-top: 20px;
+    font-size: 12px;
+    color: rgba(233, 234, 242, 0.45);
     text-align: center;
 }
 
-.room-input:focus {
-    outline: none;
-    border-color: #667eea;
-}
-
-/* Responsive Main Menu */
-@media (max-width: 768px) {
-    .main-menu {
-        padding: 20px;
+@media (max-width: 480px) {
+    .menu-header {
+        flex-wrap: wrap;
+        justify-content: center;
     }
-    
-    .main-menu h1 {
-        font-size: 2rem;
+
+    .user-pill__name {
+        max-width: 120px;
+    }
+
+    .menu-card {
+        padding: 24px 20px 22px;
     }
 }

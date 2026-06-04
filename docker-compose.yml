@@ -19,26 +19,25 @@ services:
       - REDIRECT_URI=${REDIRECT_URI}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - GAME_SERVER_WS_URL=ws://game-server:9001
     volumes:
       - ./backend:/app
     command: sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     depends_on:
       postgres:
         condition: service_healthy
-      guessioserver:
+      game-server:
         condition: service_started
 
-  guessioserver:
-    build: ./GuessIOServer
+  game-server:
+    build: ./game-server
     ports:
-      - "9001:9001"  # WebSocket server
-      - "50051:50051"  # gRPC server
+      - "9001:9001"
     environment:
       - TWITCH_OAUTH=${TWITCH_OAUTH:-}
       - TWITCH_NICK=${TWITCH_NICK:-}
       - TWITCH_CHANNEL=${TWITCH_CHANNEL:-}
-    volumes:
-      - ./GuessIOServer/config.json:/app/config.json:ro
+      - WS_PORT=9001
     restart: unless-stopped
 
   postgres:
@@ -56,5 +55,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
 volumes:
   postgres_data:

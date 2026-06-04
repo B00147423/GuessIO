@@ -151,7 +151,8 @@ function showThemeSelection() {
   popup.className = 'theme-popup';
   popup.innerHTML = `
     <div class="theme-popup-content">
-      <h3>Pick a Theme</h3>
+      <h3>Pick a theme</h3>
+      <p class="theme-popup-hint">Words will come from this category.</p>
       <div class="theme-grid">
         ${themes.map(theme => `
           <div class="theme-option" data-theme="${theme.id}">
