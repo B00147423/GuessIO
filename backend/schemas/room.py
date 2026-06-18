@@ -21,6 +21,8 @@ class RoomResponse(RoomBase):
     is_active: bool
     created_by: int
     created_at: datetime
+    twitch_channel: Optional[str] = None
+    twitch_channel_id: Optional[str] = None
     
     class Config:
         from_attributes = True
@@ -28,3 +30,7 @@ class RoomResponse(RoomBase):
 class RoomList(BaseModel):
     rooms: list[RoomResponse]
     total: int
+
+class ActiveRoomLookupResponse(BaseModel):
+    active: bool
+    room: Optional[RoomResponse] = None

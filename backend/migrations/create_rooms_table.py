@@ -22,7 +22,7 @@ def create_rooms_table():
     """Create the rooms table if it doesn't exist"""
     
     # Tables are already created by Base.metadata.create_all above
-    print("✅ Rooms table created successfully!")
+    print("[OK] Rooms table created successfully!")
     
     # Insert some sample rooms
     insert_sample_rooms()
@@ -73,15 +73,15 @@ def insert_sample_rooms():
                     )
                     print(f" Added sample room: {room['name']}")
                 else:
-                    print(f"⚠️  Room {room['name']} already exists")
+                    print(f"[WARN] Room {room['name']} already exists")
             
             conn.commit()
-            print("✅ Sample rooms inserted successfully!")
+            print("[OK] Sample rooms inserted successfully!")
             
     except Exception as e:
-        print(f"❌ Error inserting sample rooms: {e}")
+        print(f"[ERR] Error inserting sample rooms: {e}")
 
 if __name__ == "__main__":
-    print("🚀 Creating rooms table...")
+    print("[INFO] Creating rooms table...")
     create_rooms_table()
-    print("🎉 Migration completed!")
+    print("[OK] Migration completed!")

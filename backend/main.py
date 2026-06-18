@@ -12,13 +12,14 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 from db import engine, Base
 
 #  force import your models so SQLAlchemy registers them
-from models import user, score, word, history
+from models import user, score, word, history, room
 
 # Import routers
 
 from routers import users, words, scores, rooms
 from api import auth
 from api import api as api_router
+from api import twitch as twitch_router
 # Create tables if not exist
 Base.metadata.create_all(bind=engine)
 
@@ -54,6 +55,7 @@ app.include_router(scores.router)
 app.include_router(rooms.router)
 app.include_router(auth.router)
 app.include_router(api_router.router)
+app.include_router(twitch_router.router)
 
 @app.get("/health")
 def health_check():

@@ -7,7 +7,6 @@ from schemas.user import UserCreate
 from models.user import User
 import os
 import time
-import threading
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -15,49 +14,16 @@ CLIENT_ID = os.environ["TWITCH_CLIENT_ID"]
 CLIENT_SECRET = os.environ["TWITCH_CLIENT_SECRET"]
 FRONTEND_URL = os.environ["FRONTEND_URL"]
 
-# ✅ Backend handles the callback
+# Backend handles the OAuth callback
 REDIRECT_URI = os.environ["REDIRECT_URI"]
 
-# -------------------
-# Simple in-memory cache
-# -------------------
-_user_cache_lock = threading.Lock()
-_user_cache_by_twitch_id = {}
-_user_cache_by_id = {}
 
-def get_user_by_twitch_id(twitch_id: str, db: Session):
-    with _user_cache_lock:
-        if twitch_id in _user_cache_by_twitch_id:
-            return _user_cache_by_twitch_id[twitch_id]
+def get_user_by_twitch_id(twitch_id: str, db: Session) -> User | None:
+    return db.query(User).filter(User.twitch_id == str(twitch_id)).first()
 
-    user = db.query(User).filter(User.twitch_id == twitch_id).first()
-    if user:
-        with _user_cache_lock:
-            _user_cache_by_twitch_id[twitch_id] = user
-            _user_cache_by_id[user.id] = user
-    return user
 
-def get_user_by_id(user_id: int, db: Session):
-    with _user_cache_lock:
-        if user_id in _user_cache_by_id:
-            return _user_cache_by_id[user_id]
-
-    user = db.query(User).filter(User.id == user_id).first()
-    if user:
-        with _user_cache_lock:
-            _user_cache_by_id[user_id] = user
-            _user_cache_by_twitch_id[user.twitch_id] = user
-    return user
-
-def clear_user_cache(user=None):
-    """Remove a single user or all users from cache."""
-    with _user_cache_lock:
-        if user:
-            _user_cache_by_id.pop(user.id, None)
-            _user_cache_by_twitch_id.pop(user.twitch_id, None)
-        else:
-            _user_cache_by_id.clear()
-            _user_cache_by_twitch_id.clear()
+def get_user_by_id(user_id: int, db: Session) -> User | None:
+    return db.query(User).filter(User.id == user_id).first()
 
 
 @router.get("/login_url")
@@ -147,6 +113,7 @@ def auth_callback(code: str, db: Session = Depends(get_db)):
             existing.profile_image = user_in.profile_image
             existing.oauth_token = access_token
             db.commit()
+            db.refresh(existing)
             user = existing
         else:
             user = User(**user_in.dict())
@@ -154,12 +121,6 @@ def auth_callback(code: str, db: Session = Depends(get_db)):
             db.add(user)
             db.commit()
             db.refresh(user)
-        
-        # Clear + repopulate cache for this user
-        clear_user_cache(user)
-        with _user_cache_lock:
-            _user_cache_by_id[user.id] = user
-            _user_cache_by_twitch_id[user.twitch_id] = user
 
     except Exception as e:
         db.rollback()
@@ -175,10 +136,11 @@ def auth_callback(code: str, db: Session = Depends(get_db)):
         value=str(user.id),
         httponly=True,
         secure=False,   # set True in production
-        samesite="lax"
+        samesite="lax",
+        path="/",
     )
     
-    print(f"✅ Login completed in {time.time() - start_time:.2f}s")
+    print(f"[OK] Login completed in {time.time() - start_time:.2f}s")
     return response
 
 
@@ -209,8 +171,7 @@ def get_me(request: Request, db: Session = Depends(get_db)):
 @router.post("/logout")
 def logout():
     response = JSONResponse({"status": "ok", "message": "Logged out"})
-    response.delete_cookie("session_user")
-    clear_user_cache()
+    response.delete_cookie("session_user", path="/")
     return response
 
 
