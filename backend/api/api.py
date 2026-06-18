@@ -12,7 +12,11 @@ GAME_SERVER_WS_URL = os.getenv("GAME_SERVER_WS_URL", "ws://localhost:9001")
 
 
 @router.post("/spawn_bot/{user_id}")
-async def spawn_bot(user_id: int, db: Session = Depends(get_db)):
+async def spawn_bot(
+    user_id: int,
+    room_id: str | None = None,
+    db: Session = Depends(get_db),
+):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         return {"status": "error", "message": "User not found"}
@@ -25,7 +29,8 @@ async def spawn_bot(user_id: int, db: Session = Depends(get_db)):
                 "type": "spawn_bot",
                 "oauth": f"oauth:{user.oauth_token}",
                 "nick": user.username,
-                "channel": f"#{user.username.lower()}"
+                "channel": f"#{user.username.lower()}",
+                "room_id": room_id,
             }
             await ws.send(json.dumps(msg))
 

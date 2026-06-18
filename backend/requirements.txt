@@ -8,6 +8,3 @@ alembic
 requests
 websockets
 psycopg2-binary
-grpcio
-grpcio-tools
-protobuf
