@@ -52,6 +52,10 @@ export class GameServer {
     console.log(`[ROOM] Set current room for ${channel} -> ${roomName}`);
   }
 
+  sayInChannel(channel: string, message: string): void {
+    this.botManager.sayInChannel(channel, message);
+  }
+
   broadcast(msg: string): void {
     for (const s of this.sessions) {
       s.send(msg);

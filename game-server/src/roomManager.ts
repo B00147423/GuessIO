@@ -28,17 +28,8 @@ export class RoomManager {
   }
 
   leaveAll(session: ClientSession): void {
-    for (const [id, room] of this.rooms) {
-      if (room.leave(session)) {
-        room.broadcast(
-          JSON.stringify({
-            type: "system",
-            room: id,
-            payload: "Streamer disconnected, lobby cleared",
-          }),
-        );
-        room.resetLobby();
-      }
+    for (const room of this.rooms.values()) {
+      room.leave(session);
     }
   }
 
@@ -88,6 +79,9 @@ export class RoomManager {
         case "clear":
           this.handleClear(roomId);
           break;
+        case "undo":
+          this.handleUndo(roomId);
+          break;
         case "get_state":
           if (session) this.handleRestoreState(session, roomId);
           break;
@@ -103,10 +97,37 @@ export class RoomManager {
     let room = this.rooms.get(roomId);
     if (!room) {
       room = new Room();
+      this.wireRoomChatAnnouncements(room, roomId);
       this.rooms.set(roomId, room);
       console.log(`[ROOM] Creating new room: ${roomId}`);
     }
     return room;
+  }
+
+  private wireRoomChatAnnouncements(room: Room, roomId: string): void {
+    room.setChatAnnouncements({
+      onRoundStart: () => {
+        this.announceToTwitch(
+          roomId,
+          "Round starting — type !guess <word> in chat now!",
+        );
+      },
+      onCorrectGuess: (username) => {
+        this.announceToTwitch(roomId, `${username} got it right!`);
+      },
+      onRoundTimeout: (word) => {
+        this.announceToTwitch(roomId, `Time's up! The word was: ${word}`);
+      },
+      onRoundSkipped: (word) => {
+        this.announceToTwitch(roomId, `Round skipped. The word was: ${word}`);
+      },
+    });
+  }
+
+  private announceToTwitch(roomId: string, message: string): void {
+    const channel = this.roomChannels.get(roomId);
+    if (!channel || !this.server) return;
+    this.server.sayInChannel(channel, message);
   }
 
   private handleJoin(
@@ -127,7 +148,7 @@ export class RoomManager {
 
     const isNewRoom = !this.rooms.has(roomId);
     const room = this.getOrCreateRoom(roomId);
-    const channel = (j.channel ?? "").replace(/^#/, "");
+    const channel = (j.channel ?? "").replace(/^#/, "").toLowerCase();
 
     if (!isNewRoom && channel && this.server) {
       this.roomChannels.set(roomId, channel);
@@ -171,6 +192,7 @@ export class RoomManager {
         );
       }
       room.resetLobby();
+      room.clearHistory();
     }
 
     room.leave(session);
@@ -238,6 +260,7 @@ export class RoomManager {
     const oauth = j.oauth ?? "";
     const nick = j.nick ?? "";
     const channel = j.channel ?? "";
+    const roomId = normalizeRoom(j.room_id ?? j.room ?? "");
     if (!this.server) return;
 
     const spawned = this.server.spawnBot(oauth, nick, channel);
@@ -247,6 +270,17 @@ export class RoomManager {
 
     if (spawned) console.log(`ADMIN ${message}`);
     else console.log(`[ADMIN] ${message}`);
+
+    if (roomId && channel) {
+      const channelName = channel.replace(/^#/, "").toLowerCase();
+      for (const [rid, ch] of [...this.roomChannels]) {
+        if (ch.toLowerCase() === channelName) this.roomChannels.delete(rid);
+      }
+      this.getOrCreateRoom(roomId);
+      this.roomChannels.set(roomId, channelName);
+      this.server.setCurrentRoom(channelName, roomId);
+      console.log(`[ROOM] Mapped ${channelName} -> ${roomId} via spawn_bot`);
+    }
 
     if (session) {
       session.send(
@@ -286,6 +320,19 @@ export class RoomManager {
     if (!room) return;
     room.clearHistory();
     room.broadcast(JSON.stringify({ type: "clear", room: roomId }));
+  }
+
+  private handleUndo(roomId: string): void {
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+    if (!room.undoLastStroke()) return;
+    room.broadcast(
+      JSON.stringify({
+        type: "undo",
+        room: roomId,
+        payload: { strokes: room.getStrokeHistory() },
+      }),
+    );
   }
 
   private handleRestoreState(session: ClientSession, roomId: string): void {

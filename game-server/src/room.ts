@@ -1,11 +1,19 @@
 import type { ClientSession, Player, Round } from "./types.js";
 
+export interface RoomChatAnnouncements {
+  onRoundStart?: () => void;
+  onCorrectGuess?: (username: string) => void;
+  onRoundTimeout?: (word: string) => void;
+  onRoundSkipped?: (word: string) => void;
+}
+
 export class Room {
   private sessions = new Set<ClientSession>();
   private players = new Map<string, Player>();
   private nextPlayerId = 1;
   private strokeHistory: Record<string, unknown>[] = [];
   private lastActivity = Date.now();
+  private chatAnnouncements: RoomChatAnnouncements = {};
   private currentRound: Round = {
     word: "",
     hint: "",
@@ -15,13 +23,22 @@ export class Room {
   };
   private roundTimer: ReturnType<typeof setTimeout> | null = null;
 
+  private playerKey(username: string): string {
+    return username.toLowerCase();
+  }
+
+  setChatAnnouncements(announcements: RoomChatAnnouncements): void {
+    this.chatAnnouncements = announcements;
+  }
+
   join(session: ClientSession | null, username: string): void {
     let isNewPlayer = false;
     let joinMsg: Record<string, unknown> | null = null;
+    const key = this.playerKey(username);
 
-    if (!this.players.has(username)) {
+    if (!this.players.has(key)) {
       const p: Player = { id: this.nextPlayerId++, username, score: 0 };
-      this.players.set(username, p);
+      this.players.set(key, p);
       isNewPlayer = true;
       joinMsg = {
         type: "join",
@@ -62,11 +79,16 @@ export class Room {
   }
 
   isEmpty(): boolean {
-    return this.sessions.size === 0 && this.players.size === 0;
+    return (
+      this.sessions.size === 0 &&
+      this.players.size === 0 &&
+      this.strokeHistory.length === 0 &&
+      !this.currentRound.active
+    );
   }
 
   hasPlayer(username: string): boolean {
-    return this.players.has(username);
+    return this.players.has(this.playerKey(username));
   }
 
   getPlayers(): Map<string, Player> {
@@ -98,6 +120,21 @@ export class Room {
     this.strokeHistory = [];
   }
 
+  /** Remove the most recent drawn line (start → draw* → end). */
+  undoLastStroke(): boolean {
+    if (this.strokeHistory.length === 0) return false;
+
+    while (this.strokeHistory.length > 0) {
+      const stroke = this.strokeHistory[this.strokeHistory.length - 1];
+      const payload = (stroke as { payload?: { action?: string } }).payload;
+      this.strokeHistory.pop();
+      if (payload?.action === "start") break;
+    }
+
+    this.lastActivity = Date.now();
+    return true;
+  }
+
   startRound(word: string): void {
     if (this.roundTimer) {
       clearTimeout(this.roundTimer);
@@ -122,48 +159,57 @@ export class Room {
     };
     this.broadcast(JSON.stringify(msg));
     this.startServerTimer();
+    this.chatAnnouncements.onRoundStart?.();
   }
 
   handleGuess(username: string, guess: string): void {
     if (!this.currentRound.active) {
-      console.log(`[ROOM] Guess from ${username} ignored - no active round`);
+      return;
+    }
+
+    if (!this.hasPlayer(username)) {
       return;
     }
 
     const normalizedGuess = guess.trim().toLowerCase();
     const normalizedWord = this.currentRound.word.trim().toLowerCase();
 
-    console.log(
-      `[ROOM] Processing guess from ${username}: ${guess} (word: ${this.currentRound.word})`,
-    );
-
-    if (normalizedGuess === normalizedWord) {
-      const player = this.players.get(username);
-      if (player) player.score += 100;
-
-      this.broadcast(
-        JSON.stringify({
-          type: "guess",
-          payload: {
-            user: username,
-            word: guess,
-            correct: true,
-            score: player?.score ?? 0,
-          },
-        }),
-      );
-      this.endRoundInternal();
-    } else {
-      this.broadcast(
-        JSON.stringify({
-          type: "guess",
-          payload: { user: username, word: guess, correct: false },
-        }),
-      );
+    if (normalizedGuess !== normalizedWord) {
+      return;
     }
+
+    const player = this.players.get(this.playerKey(username))!;
+    player.score += 100;
+
+    console.log(`[ROOM] ${username} guessed correctly`);
+
+    this.chatAnnouncements.onCorrectGuess?.(username);
+
+    this.broadcast(
+      JSON.stringify({
+        type: "guess",
+        payload: {
+          user: username,
+          word: guess,
+          correct: true,
+          score: player.score,
+        },
+      }),
+    );
+    this.endRoundInternal();
   }
 
   endRound(): void {
+    if (!this.currentRound.active) return;
+    const word = this.currentRound.word;
+    this.chatAnnouncements.onRoundTimeout?.(word);
+    this.endRoundInternal();
+  }
+
+  skipRound(): void {
+    if (!this.currentRound.active) return;
+    const word = this.currentRound.word;
+    this.chatAnnouncements.onRoundSkipped?.(word);
     this.endRoundInternal();
   }
 

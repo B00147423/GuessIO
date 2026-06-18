@@ -22,6 +22,7 @@ export interface GameMessage {
   intentional?: boolean;
   oauth?: string;
   nick?: string;
+  room_id?: string;
 }
 
 export interface ClientSession {

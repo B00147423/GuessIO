@@ -4,6 +4,8 @@ declare module "tmi.js" {
   export interface ChatUserstate {
     "display-name"?: string;
     username?: string;
+    mod?: boolean;
+    badges?: Record<string, string>;
   }
 
   export interface ClientOptions {
