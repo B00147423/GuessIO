@@ -32,8 +32,6 @@ Designed and tested for **local development** with Docker Compose. Production de
 - OBS overlay page, eraser tool, progressive hints
 - Production HTTPS / WSS / secure cookies
 
-See [`todo.txt`](todo.txt) for the full backlog.
-
 <!-- ## Screenshots
 
 ### Homepage
