@@ -92,12 +92,12 @@ def seed_words():
     """Seed words with themes into the database"""
     db: Session = SessionLocal()
     try:
-        print("🌱 Seeding words with themes...")
+        print("[INFO] Seeding words with themes...")
         
         # Clear existing words
         db.query(Word).delete()
         db.commit()
-        print("🗑️  Cleared existing words")
+        print("[INFO] Cleared existing words")
         
         # Insert themed words
         total_words = 0
@@ -128,7 +128,7 @@ def seed_words():
                         total_words += 1
                         seen_words.add(word_text)
                     except Exception as e:
-                        print(f"⚠️  Error adding word '{word_text}': {e}")
+                        print(f"[WARN] Error adding word '{word_text}': {e}")
                         skipped_words += 1
                 
                 # Commit periodically to avoid large transactions
@@ -138,19 +138,19 @@ def seed_words():
         # Final commit
         db.commit()
         if skipped_words > 0:
-            print(f"✅ Successfully seeded {total_words} words with themes! ({skipped_words} skipped)")
+            print(f"[OK] Successfully seeded {total_words} words with themes! ({skipped_words} skipped)")
         else:
-            print(f"✅ Successfully seeded {total_words} words with themes!")
+            print(f"[OK] Successfully seeded {total_words} words with themes!")
         
         # Show summary
         theme_counts = db.query(Word.theme, func.count(Word.id)).group_by(Word.theme).all()
         
-        print("\n📊 Theme Summary:")
+        print("\n[INFO] Theme Summary:")
         for theme, count in theme_counts:
             print(f"   {theme.capitalize()}: {count} words")
             
     except Exception as e:
-        print(f"❌ Error seeding words: {e}")
+        print(f"[ERR] Error seeding words: {e}")
         db.rollback()
     finally:
         db.close()
@@ -158,6 +158,6 @@ def seed_words():
 if __name__ == "__main__":
     try:
         seed_words()
-        print("\n🎉 Word seeding completed successfully!")
+        print("\n[OK] Word seeding completed successfully!")
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERR] Error: {e}")
