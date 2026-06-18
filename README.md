@@ -1,224 +1,215 @@
 # GuessIO - Real-Time Collaborative Drawing Game
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)](https://isocpp.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 [![Twitch](https://img.shields.io/badge/Twitch-9146FF?style=for-the-badge&logo=twitch&logoColor=white)](https://www.twitch.tv/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-> **A high-performance, real-time collaborative drawing game with Twitch integration, built with modern C++ and FastAPI**
+> A real-time drawing and guessing game for Twitch streamers — viewers play in chat, the streamer draws on a shared canvas.
 
 ## Overview
 
-GuessIO is a sophisticated multiplayer drawing game that combines real-time WebSocket communication, Twitch chat integration, and collaborative gameplay. Players draw while others guess the word, creating an engaging social gaming experience perfect for streamers and their communities.
+GuessIO is a multiplayer drawing game built for live streams. The streamer hosts from a web lobby, picks a theme and round count, then draws while Twitch chat players join with `!join` and guess with `!guess <word>`. Game state syncs over WebSockets; auth and room data go through a FastAPI backend.
 
-### Key Features
+Designed and tested for **local development** with Docker Compose. Production deployment (HTTPS, WSS, env-based URLs) is not set up yet.
 
-- **Real-Time Multiplayer**: WebSocket-based game with instant synchronization
-- **Twitch Integration**: Streamers can host games directly in their chat
-- **Collaborative Drawing**: Shared canvas with stroke replay and synchronization
-- **Scoring System**: Persistent leaderboards and user statistics
-- **OAuth Authentication**: Secure Twitch login integration
-- **Docker Deployment**: Production-ready containerization
-- **High Performance**: C++ game server for low-latency gameplay
+### What works today
 
-##  Screenshots
+- Twitch OAuth login and streamer lobby
+- Theme selection and multi-round game sessions
+- Gartic-style flow: word pick → countdown → draw
+- Real-time canvas sync with stroke replay and undo
+- Drawing persists across page refresh / reconnect
+- Twitch bot: `!join`, `!guess`, mod `!skip` / `!endround`
+- Session score display at round end (in-memory; not saved to DB yet)
+- Stream layout with sidebar slots sized for OBS camera placement
 
+### Not implemented yet
 
-### Homepage .png
+- Persisted scores and leaderboard UI (API exists, frontend missing)
+- `VITE_WS_URL` — WebSocket URL is still hardcoded to `ws://localhost:9001`
+- OBS overlay page, eraser tool, progressive hints
+- Production HTTPS / WSS / secure cookies
+
+See [`todo.txt`](todo.txt) for the full backlog.
+
+<!-- ## Screenshots
+
+### Homepage
 ![Homepage](screenshots/Homepage%20.png)
 
-### themes.png
+### Theme selection
 ![themes](screenshots/themes.png)
 
-### createdRoom.png
+### Game room
 ![createdRoom](screenshots/createdRoom.png)
 
-### selectingColor.png
-![selectingColor](screenshots/selectingColor.png)
+### Drawing tools
+![selectingColor](screenshots/selectingColor.png) -->
 
-##  Technology Stack
+## Technology stack
 
-### **Backend Services**
-- **Game Server**: C++ with Boost.Asio for high-performance WebSocket handling
-- **API Server**: FastAPI (Python) with SQLAlchemy ORM
-- **gRPC Communication**: High-speed binary protocol between Python and C++
-- **Database**: PostgreSQL with Alembic migrations
-- **Authentication**: Twitch OAuth 2.0 integration
+| Layer | Tech |
+|-------|------|
+| Game server | Node.js / TypeScript WebSocket server (`game-server/`) |
+| API | FastAPI, SQLAlchemy, PostgreSQL, Alembic |
+| Frontend | Vanilla JS modules, Vite dev server, HTML5 Canvas |
+| Auth | Twitch OAuth 2.0 (session cookie) |
+| Infra | Docker Compose |
 
-### **Frontend**
-- **Framework**: Vanilla JavaScript with Vite build system
-- **Real-time**: WebSocket client with automatic reconnection
-- **Drawing**: HTML5 Canvas with stroke capture and replay
-- **UI**: Modern CSS with responsive design
 
-### **Infrastructure**
-- **Containerization**: Docker & Docker Compose
-- **WebSocket**: Custom protocol with JSON messaging
-- **gRPC**: Protocol Buffers for fast service communication
-- **Twitch Integration**: IRC bot with command parsing
-- **Deployment**: Production-ready with environment configuration
+> **Note:** Session helpers live in `api/session.js` (not `api/auth.js`) because ad blockers commonly block module URLs containing `/api/auth`.
 
-## Quick Start
+## Quick start
 
 ### Prerequisites
-- Docker & Docker Compose
-- Visual Studio (for C++ server)
-- Twitch Developer Account (for OAuth)
 
-### 1. Clone the Repository
+- Docker & Docker Compose
+- [Twitch Developer](https://dev.twitch.tv/console) app with OAuth redirect set to `http://localhost:8000/auth/callback`
+
+### 1. Clone
+
 ```bash
-git clone https://github.com/yourusername/GuessIO.git
+git clone https://github.com/B00147423/GuessIO.git
 cd GuessIO
 ```
 
-### 2. Environment Setup
+### 2. Environment
+
 Create a `.env` file in the project root:
+
 ```bash
-# Database Configuration
+# Database
 POSTGRES_DB=guessio
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=password
 
-# Twitch Configuration
-TWITCH_CLIENT_ID=your_twitch_client_id_here
-TWITCH_CLIENT_SECRET=your_twitch_client_secret_here
-TWITCH_TOKEN=oauth:your_twitch_bot_token_here
-CHANNEL_NAME=b3ka
+# Twitch OAuth (required for login)
+TWITCH_CLIENT_ID=your_twitch_client_id
+TWITCH_CLIENT_SECRET=your_twitch_client_secret
 
-# Frontend Configuration
-FRONTEND_URL=http://localhost:3000
+# Twitch bot (optional — bot can spawn per streamer session)
+TWITCH_OAUTH=oauth:your_bot_token
+TWITCH_NICK=your_bot_username
+TWITCH_CHANNEL=your_channel
+
+# URLs — use 5173 when running via Docker Compose
+FRONTEND_URL=http://localhost:5173
 REDIRECT_URI=http://localhost:8000/auth/callback
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:8000
+
+# Optional frontend override (defaults to http://localhost:8000)
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
-### 3. Start the C++ Game Server
+### 3. Run
+
 ```bash
-# Open your Visual Studio solution
-# Build and run GuessIOConnection.sln
-# Make sure it's listening on:
-# - Port 9001 (WebSocket server)
-# - Port 50051 (gRPC server)
+docker compose up --build
 ```
 
-### 4. Start the Docker Services
+### 4. Open
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| API docs | http://localhost:8000/docs |
+| Game WebSocket | `ws://localhost:9001` |
+| Health check | http://localhost:8000/health |
+
+### Run without Docker (optional)
+
 ```bash
-docker-compose up --build
+# Terminal 1 — Postgres (or use Docker for postgres only)
+# Terminal 2 — backend
+cd backend && uvicorn main:app --reload --port 8000
+
+# Terminal 3 — game server
+cd game-server && npm install && npm run dev
+
+# Terminal 4 — frontend
+cd frontend && npm install && npm run dev
 ```
 
-### 5. Access the Application
-- **Frontend**: http://localhost:3000 (production) or http://localhost:5173 (dev)
-- **API Documentation**: http://localhost:8000/docs
-- **Game Server**: WebSocket on port 9001
-- **gRPC Server**: Port 50051
+## How to play
 
-##  How to Play
+### Streamer (web)
 
-1. **Create/Join Room**: Start a new game or join an existing room
-2. **Twitch Integration**: Streamers can use `!join` in chat to participate
-3. **Drawing Phase**: One player draws while others guess the word
-4. **Guessing**: Players submit guesses through the web interface or Twitch chat
-5. **Scoring**: Points awarded for correct guesses and successful drawings
-6. **Leaderboards**: Track progress across multiple games
+1. Open http://localhost:5173 and log in with Twitch
+2. Click **Start** → pick round count and theme
+3. You land on the game page; the Twitch bot spawns for your channel
+4. Choose a word, draw on the canvas, run multiple rounds
 
-### Key Components
+### Viewers (Twitch chat)
 
-#### **C++ Game Server** (Visual Studio Solution)
-- **WebSocket Server**: Handles real-time client connections (Port 9001)
-- **gRPC Server**: Fast communication with Python API (Port 50051)
-- **Room Management**: Multi-room support with isolated game states
-- **Twitch Integration**: IRC bot for chat command processing
-- **Game Protocol**: Custom message protocol for game events
+1. Type `!join` or `join` in chat (silent — you appear on the streamer UI)
+2. When a round starts, guess with `!guess yourword`
+3. Only joined players can guess; wrong guesses are not shown on the website feed
 
-#### **FastAPI Backend** (`backend/`)
-- **User Management**: OAuth authentication and profile management
-- **Score System**: Persistent scoring and leaderboards
-- **Word Database**: Dynamic word selection and themes
-- **gRPC Client**: High-speed communication with C++ server
-- **Bot Control**: API endpoints for Twitch bot management
+### Mod / broadcaster chat commands
 
-#### **Frontend** (`frontend/`)
-- **Game Interface**: Real-time drawing and guessing interface
-- **WebSocket Client**: Handles all real-time communication
-- **State Management**: Game state synchronization and persistence
+- `!skip` — skip the current round
+- `!endround` — end the current round early
 
-### Running Tests
+## Architecture
+
+```
+┌─────────────┐     REST/OAuth      ┌─────────────┐
+│  Frontend   │ ◄──────────────────►│   FastAPI   │
+│  (Vite)     │                     │   Backend   │
+└──────┬──────┘                     └──────┬──────┘
+       │ WebSocket                         │ SQL
+       ▼                                   ▼
+┌─────────────┐     IRC            ┌─────────────┐
+│ Game Server │ ◄──────────────────►│  PostgreSQL │
+│ (port 9001) │   Twitch chat       └─────────────┘
+└─────────────┘
+```
+
+- **Frontend** — two pages: `index.html` (landing/lobby) and `game.html` (in-room play)
+- **Game server** — rooms, rounds, drawing sync, guess validation, Twitch bot
+- **Backend** — OAuth, users, word themes, room metadata, scores API
+
+## Development
+
+### Load testing
+
 ```bash
-# Load testing with Locust
 cd tests
 locust -f locustfile.py --host=http://localhost:8000
 ```
 
-## Performance & Scalability
+### Useful env vars
 
-- **Concurrent Users**: Tested with 100+ simultaneous players
-- **Latency**: Sub-50ms WebSocket message delivery
-- **gRPC Performance**: 1-3ms service-to-service communication
-- **Throughput**: 1000+ requests/second API capacity
-- **Memory**: Efficient C++ memory management with RAII
-- **Database**: Optimized queries with proper indexing
-
-##  Security Features
-
-- **OAuth 2.0**: Secure Twitch authentication
-- **Input Validation**: Comprehensive data sanitization
-- **CORS Protection**: Configured cross-origin policies
-- **Rate Limiting**: API endpoint protection
-- **SQL Injection Prevention**: Parameterized queries
-
-##  Deployment
-
-### Production Deployment
-```bash
-# Build and deploy
-docker-compose up -d
-
-# Monitor logs
-docker-compose logs -f
-
-# Scale services
-docker-compose up -d --scale backend=3
-```
-
-### Environment Variables
-```bash
-# Required for production
-TWITCH_CLIENT_ID=your_production_client_id
-TWITCH_CLIENT_SECRET=your_production_secret
-POSTGRES_PASSWORD=secure_production_password
-ALLOWED_ORIGINS=https://yourdomain.com
-```
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `VITE_API_BASE_URL` | `http://localhost:8000` | Backend URL for frontend fetches |
+| `FRONTEND_URL` | — | OAuth redirect target after login |
+| `REDIRECT_URI` | — | Twitch OAuth callback URL |
+| `ALLOWED_ORIGINS` | — | CORS origins (comma-separated) |
+| `GAME_SERVER_WS_URL` | `ws://game-server:9001` | Used by backend internally |
 
 ## Roadmap
-- [ ] **Advanced Drawing Tools**: Brushes, colors, and effects
-- [ ] **AI Integration**: Smart word suggestions and difficulty scaling
-- [ ] **Analytics Dashboard**: Streamer insights and game statistics
 
-##  Technical Achievements
+- [ ] Env-based WebSocket URL (`VITE_WS_URL`)
+- [ ] Persist round scores + leaderboard UI
+- [ ] OBS browser-source overlay
+- [ ] Eraser tool and progressive hints
+- [ ] Production deploy (HTTPS, WSS, secure cookies)
 
-- **Real-time Synchronization**: Custom WebSocket protocol for instant game state updates
-- **Cross-Platform Integration**: Seamless Twitch chat and web interface interaction
-- **High-Performance Architecture**: C++ game server with Python API backend
-- **gRPC Integration**: Fast binary protocol for microservice communication
-- **Hybrid Deployment**: Docker containerization with local C++ server
-- **Scalable Design**: Horizontal scaling support with load balancing
-- **Modern Development**: CI/CD pipeline with automated testing
+## License
 
-##  License
+MIT — see [LICENSE](LICENSE).
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Author
 
-##  Author
-
-**Beka Betsunaidze* - [GitHub](https://github.com/b00147423) - [LinkedIn](www.linkedin.com/in/beka-betsunaidze-76b612292)
+**Beka Betsunaidze** — [GitHub](https://github.com/b00147423) · [LinkedIn](https://www.linkedin.com/in/beka-betsunaidze-76b612292)
 
 ---
 
 <div align="center">
 
-** Star this repository if you found it helpful!**
-
-[Report Bug](https://github.com/B00147423/GuessIO/issues) · [Request Feature](https://github.com/B00147423/GuessIO/issues) · 
-[Documentation](https://github.com/B00147423/GuessIO/wiki)
+[Report Bug](https://github.com/B00147423/GuessIO/issues) · [Request Feature](https://github.com/B00147423/GuessIO/issues)
 
 </div>

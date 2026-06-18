@@ -3,6 +3,9 @@ services:
     build: ./frontend
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
 
@@ -33,6 +36,9 @@ services:
     build: ./game-server
     ports:
       - "9001:9001"
+    volumes:
+      - ./game-server:/app
+      - /app/node_modules
     environment:
       - TWITCH_OAUTH=${TWITCH_OAUTH:-}
       - TWITCH_NICK=${TWITCH_NICK:-}
