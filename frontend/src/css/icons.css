@@ -1,0 +1,107 @@
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  user-select: none;
+}
+
+.icon {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.icon--twitch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.icon-twitch-svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+.brand__mark.icon {
+  font-size: 20px;
+}
+
+.btn__icon.icon,
+.btn__icon .icon--twitch {
+  font-size: 18px;
+}
+
+.btn__icon .icon-twitch-svg {
+  width: 18px;
+  height: 18px;
+}
+
+.trust-pill__icon.icon {
+  font-size: 16px;
+}
+
+.callout__icon.icon {
+  font-size: 22px;
+}
+
+.check.icon {
+  font-size: 16px;
+}
+
+.step__icon.icon {
+  font-size: 26px;
+}
+
+.lobby-logo__icon.icon {
+  font-size: 30px;
+}
+
+.gartic-stage-logo__icon.icon {
+  font-size: 48px;
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.stream-camera-placeholder__icon.icon {
+  font-size: 36px;
+  opacity: 0.55;
+}
+
+.theme-icon.icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.lobby-btn__icon.icon {
+  font-size: 18px;
+}
+
+.word-hint {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+
+.word-hint__label {
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+.word-hint__value {
+  font-family: "Patrick Hand", cursive;
+  letter-spacing: 0.12em;
+}

@@ -1,0 +1,167 @@
+/* ONE bottom sidebar box — lobby cam spot = game word/tools. Exact 280px, zero shift. */
+
+:root {
+  --stream-slot-pad-y: 12px;
+  --stream-slot-pad-x: 14px;
+  --stream-slot-title-h: 28px;
+  --stream-slot-title-gap: 10px;
+  --stream-slot-body-h: calc(
+    var(--stream-camera-slot) - (var(--stream-slot-pad-y) * 2) - var(--stream-slot-title-h) -
+      var(--stream-slot-title-gap)
+  );
+}
+
+.stream-bottom-panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: var(--stream-camera-slot);
+  max-height: var(--stream-camera-slot);
+  margin: 0;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--stream-panel-border);
+  box-shadow: var(--stream-panel-shadow);
+  background: var(--stream-page-bg);
+  overflow: hidden;
+  contain: layout size style;
+}
+
+.stream-bottom-panel .gartic-slot-inner {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: var(--stream-slot-pad-y) var(--stream-slot-pad-x);
+  overflow: hidden;
+}
+
+.gartic-slot-title {
+  text-align: center;
+  width: 100%;
+}
+
+.stream-bottom-panel .gartic-slot-title {
+  font-family: "Short Stack", cursive;
+  font-size: 1.15rem;
+  text-align: center;
+  color: var(--stream-panel-text);
+  margin: 0 0 var(--stream-slot-title-gap);
+  height: var(--stream-slot-title-h);
+  min-height: var(--stream-slot-title-h);
+  max-height: var(--stream-slot-title-h);
+  line-height: var(--stream-slot-title-h);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gartic-slot-body {
+  position: relative;
+  flex: 0 0 var(--stream-slot-body-h);
+  height: var(--stream-slot-body-h);
+  min-height: 0;
+  max-height: var(--stream-slot-body-h);
+  overflow: hidden;
+}
+
+/* Both layers: same box, same size — only display swaps */
+.gartic-slot-layer {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+body.gartic-choosing #wordLayer,
+body.gartic-countdown #wordLayer {
+  display: flex;
+  pointer-events: auto;
+}
+
+body.gartic-countdown #wordLayer {
+  pointer-events: none;
+}
+
+body.gartic-drawing #toolsLayer {
+  display: flex;
+  pointer-events: auto;
+}
+
+#wordLayer .gartic-word-choices {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.gartic-room #wordLayer .gartic-word-btn {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  border-width: 2px;
+  box-shadow: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gartic-room #wordLayer .gartic-word-btn:hover {
+  transform: none;
+}
+
+.gartic-room .gartic-slot-layer.drawing-tools {
+  height: 100%;
+  background: transparent;
+  padding: 0;
+}
+
+.gartic-room .gartic-slot-layer .gartic-tool-label {
+  flex-shrink: 0;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.gartic-room .gartic-slot-layer #colorPicker {
+  flex: 0 0 36px;
+  height: 36px;
+  min-height: 36px;
+  max-height: 36px;
+}
+
+.gartic-room .gartic-slot-layer input[type="range"] {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.gartic-room .gartic-slot-layer .game-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.gartic-slot-body.lobby-cam-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.lobby-cam-body .stream-camera-placeholder__icon {
+  font-size: 2.75rem;
+  line-height: 1;
+}

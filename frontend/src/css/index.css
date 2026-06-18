@@ -143,163 +143,314 @@ html {
     color: rgba(233, 234, 242, 0.92);
 }
 
-.mock-grid {
+/* Hero demo — mirrors streamer game room layout */
+.mock-game {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 12px;
+    grid-template-columns: 0.42fr 0.58fr;
+    gap: 10px;
+    min-height: 280px;
+    --mock-panel-bg: rgba(22, 27, 44, 0.95);
+    --mock-panel-border: rgba(255, 255, 255, 0.14);
+    --mock-panel-text: rgba(233, 234, 242, 0.92);
+    --mock-panel-muted: rgba(233, 234, 242, 0.55);
+    --mock-panel-inset: rgba(0, 0, 0, 0.25);
 }
 
-.mock-canvas {
+.mock-game__sidebar {
     position: relative;
-    border-radius: 14px;
-    overflow: hidden;
-    background:
-        radial-gradient(500px 220px at 20% 20%, rgba(145, 70, 255, 0.16), transparent 60%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    min-height: 240px;
-    padding: 12px;
-}
-
-.mock-tools {
-    display: inline-flex;
-    gap: 8px;
-    padding: 6px 8px;
-    border-radius: 999px;
-    background: rgba(11, 16, 32, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.mock-tool {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: rgba(233, 234, 242, 0.24);
-}
-
-.mock-tool--active {
-    background: linear-gradient(135deg, var(--brand), var(--brand-2));
-}
-
-.mock-canvas__art {
-    position: absolute;
-    inset: 40px 12px 60px 12px;
-    border-radius: 12px;
-    border: 1px dashed rgba(255, 255, 255, 0.18);
-    background:
-        radial-gradient(260px 120px at 30% 40%, rgba(255, 255, 255, 0.06), transparent 60%),
-        radial-gradient(200px 100px at 70% 60%, rgba(145, 70, 255, 0.08), transparent 65%);
-}
-
-.mock-hint {
-    position: absolute;
-    left: 12px;
-    bottom: 12px;
-    right: 12px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: rgba(11, 16, 32, 0.46);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.mock-hint__label {
-    font-size: 12px;
-    font-weight: 800;
-    color: rgba(233, 234, 242, 0.76);
-}
-
-.mock-hint__value {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-weight: 800;
-    letter-spacing: 0.32em;
-    color: rgba(233, 234, 242, 0.90);
-}
-
-.mock-meta {
-    position: absolute;
-    left: 12px;
-    top: 12px;
-    right: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-top: 42px;
-    font-size: 12px;
-    color: rgba(233, 234, 242, 0.72);
-}
-
-.mock-timer {
-    font-weight: 900;
-    color: rgba(233, 234, 242, 0.92);
-}
-
-.mock-chat {
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.03);
     display: flex;
     flex-direction: column;
-    min-height: 240px;
+    gap: 8px;
+    min-height: 0;
+    padding-bottom: 72px;
 }
 
-.mock-chat__header {
+.mock-panel {
+    background: var(--mock-panel-bg);
+    border: 1px solid var(--mock-panel-border);
+    border-radius: 8px;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.mock-panel--players {
+    flex: 0 0 auto;
+}
+
+.mock-panel-binding {
+    height: 8px;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.15) 0 6px,
+        rgba(255, 255, 255, 0.35) 6px 7px,
+        rgba(255, 255, 255, 0.15) 7px 13px
+    );
+    border-bottom: 1px solid var(--mock-panel-border);
+}
+
+.mock-panel-inner {
+    padding: 8px 10px;
+}
+
+.mock-panel-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--mock-panel-text);
+    margin: 0 0 4px;
+}
+
+.mock-player-count {
+    display: block;
+    font-size: 10px;
+    color: var(--mock-panel-muted);
+    margin-bottom: 6px;
+}
+
+.mock-players {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 4px;
+}
+
+.mock-players li {
+    padding: 4px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--mock-panel-text);
+    background: rgba(145, 70, 255, 0.18);
+    border-radius: 4px;
+}
+
+.mock-panel--feed {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mock-panel--feed .mock-panel-inner {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mock-feed-hint {
+    font-size: 9px;
+    color: var(--mock-panel-muted);
+    margin: 0 0 6px;
+}
+
+.mock-feed {
+    flex: 1;
+    min-height: 0;
+    background: var(--mock-panel-inset);
+    border-radius: 6px;
+    padding: 6px;
+    overflow: hidden;
+}
+
+.mock-feed__line {
+    font-size: 9px;
+    line-height: 1.45;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--mock-panel-text);
+}
+
+.mock-feed__line:last-child {
+    border-bottom: none;
+}
+
+.mock-feed__line--system {
+    color: var(--mock-panel-muted);
+    font-style: italic;
+}
+
+.mock-feed__line--win {
+    color: #4ade80;
+    font-weight: 700;
+}
+
+.mock-slot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 64px;
+    background: var(--mock-panel-bg);
+    border: 1px solid var(--mock-panel-border);
+    border-radius: 8px;
+    padding: 6px 8px;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.mock-slot-title {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--mock-panel-text);
+    margin-bottom: 6px;
+}
+
+.mock-slot-body {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.mock-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mock-slider {
+    flex: 1;
+    min-width: 40px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.mock-btn {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--mock-panel-text);
+}
+
+.mock-game__stage {
+    min-height: 0;
+    min-width: 0;
+}
+
+.mock-notebook {
+    position: relative;
+    height: 100%;
+    min-height: 280px;
+    display: grid;
+    grid-template-rows: min-content minmax(0, 1fr) min-content;
+    background: #fffef8;
+    border: 3px solid #3d8c5a;
+    border-radius: 10px;
+    box-shadow: 5px 6px 16px rgba(0, 0, 0, 0.35);
+    background-image: linear-gradient(#e8e4dc 1px, transparent 1px);
+    background-size: 100% 22px;
+    overflow: hidden;
+}
+
+.mock-notebook-spiral {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: repeating-linear-gradient(
+        90deg,
+        #c8c0b0 0 8px,
+        #888 8px 9px,
+        transparent 9px 18px
+    );
+    border-bottom: 1px solid #3d8c5a;
+    z-index: 1;
+}
+
+.mock-notebook-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 12px;
-    background: rgba(11, 16, 32, 0.48);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-}
-
-.mock-chat__title {
-    font-size: 12px;
-    font-weight: 900;
-    color: rgba(233, 234, 242, 0.90);
-}
-
-.mock-chat__pill {
-    font-size: 11px;
-    font-weight: 900;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: rgba(145, 70, 255, 0.12);
-    border: 1px solid rgba(145, 70, 255, 0.22);
-    color: rgba(233, 234, 242, 0.9);
-}
-
-.mock-chat__list {
-    padding: 10px 12px;
-    display: grid;
     gap: 8px;
-    flex: 1;
+    padding: 18px 10px 6px;
+    z-index: 2;
 }
 
-.chat-line {
-    font-size: 12px;
-    color: rgba(233, 234, 242, 0.74);
+.mock-notebook-bar__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
 }
 
-.chat-user {
-    font-weight: 900;
-    color: rgba(233, 234, 242, 0.92);
+.mock-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 800;
+    color: #ef4444;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.chat-line--good {
-    color: rgba(34, 197, 94, 0.92);
+.mock-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ef4444;
 }
 
-.mock-chat__input {
-    padding: 10px 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.10);
-    color: rgba(233, 234, 242, 0.52);
-    font-size: 12px;
-    background: rgba(11, 16, 32, 0.46);
+.mock-word {
+    font-size: 11px;
+    font-weight: 800;
+    color: #3d3060;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(61, 48, 96, 0.08);
+    border: 1px dashed rgba(61, 48, 96, 0.25);
+}
+
+.mock-close {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    line-height: 1;
+    color: #3d3060;
+    border: 1px solid #3d3060;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.mock-notebook-body {
+    min-height: 0;
+    padding: 4px 10px 8px;
+}
+
+.mock-canvas-area {
+    height: 100%;
+    min-height: 140px;
+    border-radius: 4px;
+    background: #fffef8;
+}
+
+.mock-notebook-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #3d3060;
+}
+
+.mock-timer-footer {
+    font-family: "Patrick Hand", cursive;
+}
+
+.mock-round {
+    font-family: "Short Stack", cursive;
 }
 
 .hero-stats {
@@ -442,6 +593,16 @@ html {
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.preview-list code {
+    font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: rgba(145, 70, 255, 0.15);
+    border: 1px solid rgba(145, 70, 255, 0.25);
+    color: rgba(233, 234, 242, 0.95);
 }
 
 .check {
@@ -610,7 +771,7 @@ html {
     .landing-hero__grid {
         grid-template-columns: 1fr;
     }
-    .mock-grid {
+    .mock-game {
         grid-template-columns: 1fr;
     }
     .hero-stats {

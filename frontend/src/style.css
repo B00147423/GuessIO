@@ -2,6 +2,7 @@
 
 /* Base/Global Styles */
 @import url('./css/base.css');
+@import url('./css/icons.css');
 
 /* Header Styles */
 @import url('./css/header.css');
@@ -13,7 +14,9 @@
 @import url('./css/mainMenu.css');
 
 /* Game Page Styles */
-@import url('./css/game.css');
+@import url('./css/streamLayout.css?v=22');
+@import url('./css/streamBottomSlot.css?v=22');
+@import url('./css/game.css?v=24');
 
 /* Theme Selection Styles */
 @import url('./css/themeSelection.css');

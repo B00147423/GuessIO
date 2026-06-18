@@ -4,82 +4,103 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GuessIO - Game Room</title>
-  <link rel="stylesheet" href="./src/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Short+Stack&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css?v=24" />
   <link rel="stylesheet" href="./src/css/dialog.css" />
 </head>
-<body>
-  <div class="container">
-    <header class="header">
-      <div class="logo-container">
-        <div class="logo-icon"></div>
-        <h1 class="logo">GuessIO</h1>
-      </div>
-      <div class="live-indicator">
-        <span class="live-dot"></span>
-        <span>LIVE</span>
-      </div>
-    </header>
+<body class="game-page gartic-room gartic-choosing">
+  <div class="gartic-bg" aria-hidden="true"></div>
 
-    <!-- Game Section -->
-    <div class="game-container">
-      <div class="game-header">
-        <div class="game-info">
-          <h3 id="roomName">Room: Loading...</h3>
-          <div class="game-status">
-            <span id="playerCount">0 players</span>
-             <span id="timerDisplay"></span>
-          </div>
+  <div class="gartic-layout stream-layout">
+    <aside class="gartic-sidebar stream-sidebar">
+      <section class="gartic-panel gartic-panel--players stream-panel--top">
+        <div class="gartic-panel-binding" aria-hidden="true"></div>
+        <div class="gartic-panel-inner">
+          <h4 class="gartic-panel-title">Players</h4>
+          <span id="playerCount" class="gartic-player-count">0 players</span>
+          <ul id="players" class="gartic-players"></ul>
         </div>
-        <button id="backToMenuBtn" class="btn btn-danger">← Back to Menu</button>
-      </div>
-      
-      <div class="game-main">
-        <div class="left-sidebar">
-          <div class="player-list">
-            <h4>👥 Players</h4>
-            <ul id="players"></ul>
-          </div>
+      </section>
+
+      <section class="gartic-panel gartic-panel--feed stream-panel--mid">
+        <div class="gartic-panel-inner">
+          <p class="gartic-feed-hint">Twitch chat → !guess word</p>
+          <div id="guessDisplay" class="game-feed gartic-feed" aria-live="polite"></div>
+          <div id="scoreDisplay" class="score-display" hidden></div>
         </div>
-        
-        <canvas id="draw" width="800" height="600"></canvas>
-        
-        <div class="right-sidebar">
-          <div class="drawing-tools">
-            <h4>🎨 Tools</h4>
+      </section>
 
-
-            <input type="color" id="colorPicker" value="#000000" />
-
-          <!-- NEW brush size slider -->
-          <input type="range" id="brushSize" min="1" max="20" value="4">
-
-          <!-- NEW opacity slider -->
-          <input type="range" id="alphaPicker" min="0" max="1" step="0.05" value="1">
-          </div>
-          
-          <div class="game-controls">
-            <button id="clearBtn" class="btn btn-secondary">🗑️ Clear Canvas</button>
-            <button id="undoBtn" class="btn btn-secondary">↶ Undo</button>
-            <button id="startRoundBtn" class="btn btn-primary">🎯 Start Round</button>
-          </div>
-          
-          <!-- Game Display Elements -->
-          <div class="game-display">
-            <div id="wordDisplay" style="display: none; background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold;"></div>
-            <!-- <div id="timerDisplay" style="display: none; background: #e0e0e0; padding: 5px; margin: 5px 0; border-radius: 3px;"></div> -->
-            <div class="guess-info" style="margin: 10px 0; padding: 10px; background: #f0f8ff; border-radius: 5px; text-align: center;">
-              <p style="margin: 0; color: #333;">💬 <strong>Viewers guess in Twitch chat:</strong></p>
-              <p style="margin: 5px 0 0 0; color: #666; font-family: monospace;">!guess your_word_here</p>
+      <div class="stream-camera-slot">
+        <section class="stream-bottom-panel" id="streamBottomPanel">
+          <div class="gartic-slot-inner">
+            <h3 class="gartic-slot-title" id="bottomSlotTitle">Choose a word</h3>
+            <div class="gartic-slot-body">
+              <div id="wordLayer" class="gartic-slot-layer">
+                <div id="wordChoices" class="gartic-word-choices"></div>
+              </div>
+              <div id="toolsLayer" class="gartic-slot-layer drawing-tools">
+                <input type="color" id="colorPicker" value="#000000" />
+                <label class="gartic-tool-label">Brush size</label>
+                <input type="range" id="brushSize" min="1" max="20" value="4" />
+                <label class="gartic-tool-label">Opacity</label>
+                <input type="range" id="alphaPicker" min="0" max="1" step="0.05" value="1" />
+                <div class="game-controls">
+                  <button id="clearBtn" type="button" class="gartic-tool-btn">Clear</button>
+                  <button id="undoBtn" type="button" class="gartic-tool-btn">Undo</button>
+                </div>
+              </div>
             </div>
-            <div id="guessDisplay" style="max-height: 200px; overflow-y: auto; background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 5px;"></div>
-            <div id="scoreDisplay" style="background: #fff; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ddd;"></div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <main class="gartic-stage stream-stage">
+      <div class="gartic-notebook">
+        <div class="gartic-notebook-spiral" aria-hidden="true"></div>
+
+        <div class="gartic-notebook-bar">
+          <div class="gartic-notebook-bar__left">
+            <div id="liveIndicator" class="live-indicator live-indicator--checking" hidden>
+              <span class="live-dot"></span>
+              <span id="liveLabel">…</span>
+            </div>
+            <div id="wordDisplay" class="gartic-word-reveal" hidden></div>
+          </div>
+          <button id="backToMenuBtn" type="button" class="gartic-close" aria-label="Leave room">×</button>
+        </div>
+
+        <div class="gartic-notebook-body">
+          <div id="choosingOverlay" class="gartic-choosing gartic-phase-layer">
+            <div class="gartic-stage-logo">
+              <span class="gartic-stage-logo__icon" data-icon="palette" aria-hidden="true"></span>
+              <span class="gartic-stage-logo__text">GuessIO <strong>SHOW!</strong></span>
+            </div>
+            <p class="gartic-choosing-text">The streamer is choosing a word</p>
+          </div>
+
+          <div id="countdownOverlay" class="gartic-countdown gartic-phase-layer">
+            <span id="countdownNumber" class="gartic-countdown__num">3</span>
+          </div>
+
+          <div class="canvas-wrap gartic-canvas-wrap gartic-phase-layer" id="canvasArea">
+            <canvas id="draw" width="1280" height="720"></canvas>
           </div>
         </div>
+
+        <footer class="gartic-notebook-footer">
+          <span id="timerDisplay" class="gartic-timer" aria-hidden="true">&nbsp;</span>
+          <span id="roundIndicator" class="gartic-round">1/10</span>
+        </footer>
+
+        <div class="gartic-page-curl" aria-hidden="true"></div>
       </div>
-    </div>
+    </main>
   </div>
 
-  <!-- Load modular JS -->
-  <script type="module" src="./src/game.js"></script>
+  <script type="module" src="./src/game/game.js?v=20"></script>
 </body>
 </html>

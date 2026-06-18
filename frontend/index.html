@@ -4,16 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GuessIO - Draw, Guess, Win Live!</title>
-  <link rel="stylesheet" href="src/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Short+Stack&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css?v=22" />
 </head>
 <body>
+  <div id="landingShell">
   <div class="landing-bg" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="landing-nav">
     <div class="container landing-nav__inner">
       <a class="brand" href="/" aria-label="GuessIO home">
-        <span class="brand__mark" aria-hidden="true">🎨</span>
+        <span class="brand__mark" data-icon="palette" aria-hidden="true"></span>
         <span class="brand__name">GuessIO</span>
         <span class="brand__badge" aria-label="Product status">
           Beta
@@ -28,7 +33,7 @@
 
       <div class="landing-nav__cta">
         <button class="btn btn-ghost js-twitch-login" type="button">
-          <span class="btn__icon" aria-hidden="true">📺</span>
+          <span class="btn__icon" data-icon="twitch" aria-hidden="true"></span>
           Login with Twitch
         </button>
       </div>
@@ -49,7 +54,7 @@
 
           <div class="hero-actions" role="group" aria-label="Primary actions">
             <button id="twitchLoginBtn" class="btn btn-primary" type="button">
-              <span class="btn__icon" aria-hidden="true">📺</span>
+              <span class="btn__icon" data-icon="twitch" aria-hidden="true"></span>
               Login with Twitch
             </button>
             <a class="btn btn-secondary" href="#preview">
@@ -59,63 +64,85 @@
 
           <div class="trust-row" aria-label="Platform and tech highlights">
             <div class="trust-pill">
-              <span class="trust-pill__icon" aria-hidden="true">🔒</span>
+              <span class="trust-pill__icon" data-icon="lock" aria-hidden="true"></span>
               Twitch OAuth
             </div>
             <div class="trust-pill">
-              <span class="trust-pill__icon" aria-hidden="true">⚡</span>
+              <span class="trust-pill__icon" data-icon="zap" aria-hidden="true"></span>
               Real-time WebSockets
             </div>
             <div class="trust-pill">
-              <span class="trust-pill__icon" aria-hidden="true">🎯</span>
+              <span class="trust-pill__icon" data-icon="target" aria-hidden="true"></span>
               Stream-ready rounds
             </div>
           </div>
         </div>
 
-        <div class="landing-hero__visual" aria-label="Product preview mock">
+        <div class="landing-hero__visual" aria-label="Streamer game room preview">
           <div class="mock-card">
             <div class="mock-card__top">
               <div class="mock-title">
                 <span class="mock-dot" aria-hidden="true"></span>
-                Demo Round Preview
+                Streamer game room
               </div>
               <div class="mock-chip" aria-label="Preview is illustrative">
                 Demo
               </div>
             </div>
 
-            <div class="mock-grid">
-              <div class="mock-canvas" role="img" aria-label="Canvas preview">
-                <div class="mock-tools" aria-hidden="true">
-                  <span class="mock-tool mock-tool--active"></span>
-                  <span class="mock-tool"></span>
-                  <span class="mock-tool"></span>
-                </div>
-                <div class="mock-canvas__art" aria-hidden="true"></div>
-                <div class="mock-hint">
-                  <span class="mock-hint__label">Word hint</span>
-                  <span class="mock-hint__value">_ _ _ _ _ _</span>
-                </div>
-                <div class="mock-meta">
-                  <span>Streamer is drawing</span>
-                  <span class="mock-timer">0:45</span>
-                </div>
-              </div>
+            <div class="mock-game" aria-hidden="true">
+              <aside class="mock-game__sidebar">
+                <section class="mock-panel mock-panel--players">
+                  <div class="mock-panel-binding"></div>
+                  <div class="mock-panel-inner">
+                    <h4 class="mock-panel-title">Players</h4>
+                    <span class="mock-player-count">3 players</span>
+                    <ul class="mock-players">
+                      <li>pixelpirate</li>
+                      <li>mod_kiwi</li>
+                      <li>chatwizard</li>
+                    </ul>
+                  </div>
+                </section>
 
-              <div class="mock-chat" aria-label="Chat preview">
-                <div class="mock-chat__header">
-                  <span class="mock-chat__title">Chat guesses</span>
-                  <span class="mock-chat__pill">Demo</span>
+                <section class="mock-panel mock-panel--feed">
+                  <div class="mock-panel-inner">
+                    <p class="mock-feed-hint">Twitch chat → !guess word</p>
+                    <div class="mock-feed">
+                      <div class="mock-feed__line mock-feed__line--system">Round started — viewers type !guess &lt;word&gt; in Twitch chat!</div>
+                      <div class="mock-feed__line mock-feed__line--win">@chatwizard got it right! (+120 pts)</div>
+                    </div>
+                  </div>
+                </section>
+
+                <div class="mock-slot">
+                  <div class="mock-slot-title">Drawing tools</div>
+                  <div class="mock-slot-body">
+                    <span class="mock-color"></span>
+                    <span class="mock-slider"></span>
+                    <span class="mock-btn">Clear</span>
+                    <span class="mock-btn">Undo</span>
+                  </div>
                 </div>
-                <div class="mock-chat__list" aria-hidden="true">
-                  <div class="chat-line"><span class="chat-user">pixelpirate</span> is it “guitar”?</div>
-                  <div class="chat-line"><span class="chat-user">mod_kiwi</span> close…</div>
-                  <div class="chat-line"><span class="chat-user">sketchdad</span> “banjo”</div>
-                  <div class="chat-line chat-line--good"><span class="chat-user">chatwizard</span> got it!</div>
-                </div>
-                <div class="mock-chat__input" aria-hidden="true">
-                  Type your guess…
+              </aside>
+
+              <div class="mock-game__stage">
+                <div class="mock-notebook">
+                  <div class="mock-notebook-spiral"></div>
+                  <div class="mock-notebook-bar">
+                    <div class="mock-notebook-bar__left">
+                      <span class="mock-live"><span class="mock-live-dot"></span>LIVE</span>
+                      <span class="mock-word">CAT</span>
+                    </div>
+                    <span class="mock-close">×</span>
+                  </div>
+                  <div class="mock-notebook-body">
+                    <div class="mock-canvas-area" aria-hidden="true"></div>
+                  </div>
+                  <footer class="mock-notebook-footer">
+                    <span class="mock-timer-footer">Time: 42s</span>
+                    <span class="mock-round">3/10</span>
+                  </footer>
                 </div>
               </div>
             </div>
@@ -150,21 +177,21 @@
 
           <div class="callouts">
             <div class="callout">
-              <div class="callout__icon" aria-hidden="true">🎥</div>
+              <div class="callout__icon" data-icon="video" aria-hidden="true"></div>
               <div>
                 <div class="callout__title">Stream overlay friendly</div>
                 <div class="callout__text">The UI stays legible without looking like a dashboard.</div>
               </div>
             </div>
             <div class="callout">
-              <div class="callout__icon" aria-hidden="true">🧠</div>
+              <div class="callout__icon" data-icon="lightbulb" aria-hidden="true"></div>
               <div>
                 <div class="callout__title">Fast comprehension</div>
                 <div class="callout__text">Chat instantly knows what to do: guess, react, win.</div>
               </div>
             </div>
             <div class="callout">
-              <div class="callout__icon" aria-hidden="true">🏁</div>
+              <div class="callout__icon" data-icon="flag" aria-hidden="true"></div>
               <div>
                 <div class="callout__title">Tight pacing</div>
                 <div class="callout__text">Short rounds, quick transitions, steady momentum.</div>
@@ -176,22 +203,24 @@
         <div class="preview-card">
           <div class="preview-card__header">
             <div>
-              <div class="preview-card__title">Round UI highlights</div>
-              <div class="preview-card__hint">Illustrative mock — not live data yet.</div>
+              <div class="preview-card__title">What's live now</div>
+              <div class="preview-card__hint">Real rounds — Twitch chat, canvas, and streamer UI.</div>
             </div>
           </div>
           <ul class="preview-list">
-            <li><span class="check" aria-hidden="true">✓</span> Word hint + timer that stays readable on-stream</li>
-            <li><span class="check" aria-hidden="true">✓</span> Clear role state: who draws, who guesses</li>
-            <li><span class="check" aria-hidden="true">✓</span> Chat-friendly feedback (correct guesses, streaks)</li>
-            <li><span class="check" aria-hidden="true">✓</span> Minimal chrome so the canvas remains the star</li>
+            <li><span class="check" data-icon="check" aria-hidden="true"></span> Twitch chat: <code>!join</code> to play, <code>!guess</code> to answer</li>
+            <li><span class="check" data-icon="check" aria-hidden="true"></span> Round countdown, word reveal for streamer, and server-side timer</li>
+            <li><span class="check" data-icon="check" aria-hidden="true"></span> Live canvas — strokes sync and persist on refresh</li>
+            <li><span class="check" data-icon="check" aria-hidden="true"></span> Player list + correct-guess feed (no wrong-guess spam)</li>
+            <li><span class="check" data-icon="check" aria-hidden="true"></span> Bot announces round start, winners, and timeouts in chat</li>
+            <li><span class="check" data-icon="check" aria-hidden="true"></span> Stream layout with camera slot for OBS</li>
           </ul>
           <div class="preview-card__footer">
             <button class="btn btn-primary js-twitch-login" type="button">
-              <span class="btn__icon" aria-hidden="true">📺</span>
+              <span class="btn__icon" data-icon="twitch" aria-hidden="true"></span>
               Start with Twitch
             </button>
-            <div class="fineprint">By continuing, you’ll authenticate with Twitch. Not affiliated with Twitch.</div>
+            <div class="fineprint">By continuing, you'll authenticate with Twitch. Not affiliated with Twitch.</div>
           </div>
         </div>
       </div>
@@ -206,17 +235,17 @@
 
         <div class="steps">
           <article class="step">
-            <div class="step__icon" aria-hidden="true">🎨</div>
+            <div class="step__icon" data-icon="palette" aria-hidden="true"></div>
             <h3 class="step__title">Streamer draws</h3>
             <p class="step__text">Pick a theme, start a room, and draw on a shared canvas.</p>
           </article>
           <article class="step">
-            <div class="step__icon" aria-hidden="true">💬</div>
+            <div class="step__icon" data-icon="message" aria-hidden="true"></div>
             <h3 class="step__title">Chat guesses</h3>
             <p class="step__text">Viewers guess in real-time and feel the tension each round.</p>
           </article>
           <article class="step">
-            <div class="step__icon" aria-hidden="true">🏆</div>
+            <div class="step__icon" data-icon="trophy" aria-hidden="true"></div>
             <h3 class="step__title">Points + bragging rights</h3>
             <p class="step__text">Correct guesses and great drawings earn points across rounds.</p>
           </article>
@@ -267,7 +296,7 @@
           <p class="cta-subtitle">Login with Twitch and create a room in seconds.</p>
         </div>
         <button class="btn btn-primary btn-lg js-twitch-login" type="button">
-          <span class="btn__icon" aria-hidden="true">📺</span>
+          <span class="btn__icon" data-icon="twitch" aria-hidden="true"></span>
           Login with Twitch
         </button>
       </div>
@@ -286,9 +315,78 @@
       </div>
     </div>
   </footer>
+  </div><!-- /landingShell -->
+
+  <div id="lobbySection" class="lobby-page" hidden>
+    <div class="lobby-bg" aria-hidden="true"></div>
+    <div class="lobby-layout stream-layout">
+      <aside class="lobby-sidebar stream-sidebar" aria-label="Stream overlay slots">
+        <div class="stream-panel--top lobby-card lobby-card--logo">
+          <div class="lobby-logo">
+            <span class="lobby-logo__icon" data-icon="palette" aria-hidden="true"></span>
+            <span class="lobby-logo__text">GuessIO <strong>SHOW!</strong></span>
+          </div>
+        </div>
+        <div class="stream-panel--mid lobby-card lobby-card--slot" aria-hidden="true"></div>
+        <div class="stream-camera-slot">
+          <section class="stream-bottom-panel">
+            <div class="gartic-slot-inner">
+              <h3 class="gartic-slot-title">Place your camera here!</h3>
+              <div class="gartic-slot-body lobby-cam-body">
+                <span class="stream-camera-placeholder__icon" data-icon="camera" aria-hidden="true"></span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </aside>
+      <main class="lobby-notebook stream-stage" aria-labelledby="notebook-title">
+        <div class="notebook-binding" aria-hidden="true"></div>
+        <div class="notebook-page">
+          <header class="notebook-header">
+            <p class="notebook-eyebrow" id="notebook-title">Streamer notebook</p>
+            <h1 class="notebook-name" id="streamerName">Loading…</h1>
+            <img id="userAvatar" src="/default-avatar.png" alt="" class="notebook-avatar" width="48" height="48" hidden>
+          </header>
+          <section class="how-to-play" aria-labelledby="how-title">
+            <h2 id="how-title" class="how-to-play__title">How to Play</h2>
+            <div class="how-steps">
+              <article class="how-step">
+                <div class="how-step__art how-step__art--guess" aria-hidden="true">
+                  <div class="doodle-monitor"></div>
+                  <div class="doodle-person doodle-person--left"></div>
+                </div>
+                <p>Guess the streamer's drawing</p>
+              </article>
+              <article class="how-step">
+                <div class="how-step__art how-step__art--win" aria-hidden="true">
+                  <div class="doodle-person doodle-person--right"></div>
+                  <div class="doodle-stars">★ ★</div>
+                </div>
+                <p>Earn points and lead the ranking!</p>
+              </article>
+            </div>
+          </section>
+          <footer class="lobby-footer">
+            <p class="lobby-status" id="lobbyStatus">
+              <span class="lobby-status__spinner" aria-hidden="true"></span>
+              Ready to start a round
+            </p>
+            <div class="lobby-actions">
+              <button id="logoutBtn" type="button" class="lobby-btn lobby-btn--logout">
+                <span class="lobby-btn__icon" data-icon="log-out" aria-hidden="true"></span> Log out
+              </button>
+              <button id="startBtn" type="button" class="lobby-btn lobby-btn--start">
+                <span aria-hidden="true">▶</span> Start
+              </button>
+            </div>
+          </footer>
+        </div>
+      </main>
+    </div>
+  </div>
 
   <!-- Load modular JS -->
-  <script type="module" src="src/app.js"></script>
+  <script type="module" src="src/app.js?v=9"></script>
   <script>
     document.getElementById("year").textContent = String(new Date().getFullYear());
   </script>

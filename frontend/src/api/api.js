@@ -1,17 +1,20 @@
-// Get API base URL from environment or default to localhost for development
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+import { API_BASE_URL } from "../config.js";
 
 export async function getLoginUrl() {
   const res = await fetch(`${API_BASE_URL}/auth/login_url`, {
-    credentials: "include"
+    credentials: "include",
   });
+  if (!res.ok) {
+    throw new Error(`login_url failed: ${res.status}`);
+  }
   return res.json();
 }
 
 export async function spawnBot(userId, roomId) {
-  const res = await fetch(`${API_BASE_URL}/spawn_bot/${userId}?room_id=${roomId}`, {
+  const qs = roomId ? `?room_id=${encodeURIComponent(roomId)}` : "";
+  const res = await fetch(`${API_BASE_URL}/spawn_bot/${userId}${qs}`, {
     method: "POST",
-    credentials: "include"
+    credentials: "include",
   });
   return res.json();
 }
