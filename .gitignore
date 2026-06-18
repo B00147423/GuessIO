@@ -37,6 +37,9 @@ Thumbs.db
 config.json
 
 
+# Personal notes (local only)
+todo.txt
+
 # Environment variables
 .env
 .env.local
